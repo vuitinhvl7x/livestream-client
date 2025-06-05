@@ -1,19 +1,24 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import AppRoutes from "./routes";
+import { Toaster } from "sonner";
 import "./index.css";
 
-// Placeholder App component
+// Main App component now renders routes and Toaster
 function App() {
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>Hello, Vite + React + Tailwind!</h1>
-      <p>Project setup is in progress.</p>
-    </div>
+    <>
+      <AppRoutes />
+      <Toaster richColors position="top-right" />
+    </>
   );
 }
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>
 );
