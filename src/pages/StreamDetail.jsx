@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../api";
+import authApi from "../api/authApi";
+import useAuthStore from "../state/authStore";
 import VideoPlayer from "../components/VideoPlayer";
 import ChatBox from "../components/ChatBox";
 
@@ -10,29 +12,44 @@ const StreamDetail = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {
-    const fetchStreamData = async () => {
+    // We will fetch stream details and chat messages separately.
+    // Stream details are public, but chat requires authentication.
+    const fetchStreamDetails = async () => {
       try {
         setLoading(true);
-        // Fetch stream details and chat messages in parallel
-        const [streamResponse, chatResponse] = await Promise.all([
-          api.get(`/streams/${streamId}`),
-          api.get(`/chat/${streamId}/messages`),
-        ]);
+        const streamResponse = await api.get(`/streams/${streamId}`);
         setStream(streamResponse.data.stream);
-        setMessages(chatResponse.data.messages);
         setError(null);
       } catch (err) {
-        setError("Failed to fetch stream details. It might not exist.");
-        console.error(err);
+        setError(
+          "Failed to fetch stream details. The stream might not exist or the service is down."
+        );
+        console.error("Error fetching stream details:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStreamData();
-  }, [streamId]);
+    const fetchChatMessages = async () => {
+      // Only fetch messages if the user is authenticated.
+      if (isAuthenticated) {
+        try {
+          const chatResponse = await authApi.get(`/chat/${streamId}/messages`);
+          setMessages(chatResponse.data.messages || []);
+        } catch (err) {
+          // We don't set a page-level error for chat, just log it.
+          // The ChatBox component can show its own error or empty state.
+          console.error("Error fetching chat messages:", err);
+        }
+      }
+    };
+
+    fetchStreamDetails();
+    fetchChatMessages();
+  }, [streamId, isAuthenticated]);
 
   if (loading) {
     return <div className="text-center mt-10">Loading stream...</div>;

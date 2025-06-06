@@ -15,10 +15,8 @@ const CategoryDetail = () => {
     const fetchStreamsByCategory = async () => {
       try {
         setLoading(true);
-        const categoriesResponse = await api.get("/categories");
-        const currentCategory = categoriesResponse.data.categories.find(
-          (c) => c.slug === slug
-        );
+        const categoryResponse = await api.get(`/categories/${slug}`);
+        const currentCategory = categoryResponse.data.data;
 
         if (!currentCategory) {
           setError("Category not found.");
@@ -26,7 +24,7 @@ const CategoryDetail = () => {
           return;
         }
         setCategory(currentCategory);
-
+        console.log("Đây là data category bạn muốn xem:", currentCategory);
         const streamsResponse = await api.get(
           `/streams?categoryId=${currentCategory.id}&limit=50` // Fetch more streams
         );
@@ -34,13 +32,15 @@ const CategoryDetail = () => {
         setError(null);
       } catch (err) {
         setError("Failed to fetch data for this category.");
-        console.error(err);
+        console.error("Lỗi khi fetch data cho category:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStreamsByCategory();
+    if (slug) {
+      fetchStreamsByCategory();
+    }
   }, [slug]);
 
   const liveStreams = useMemo(
