@@ -5,6 +5,7 @@ const authApi = axios.create({
   // The base URL will be proxied by Vite, so we only need the base path if any.
   // In our case, the proxy handles '/api', so we can even leave this empty
   // and call authApi.post('/users/logout')
+  baseURL: "/api",
 });
 
 // Request interceptor to add the auth token to every request

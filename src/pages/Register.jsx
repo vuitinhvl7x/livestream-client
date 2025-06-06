@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import axios from "axios";
+import api from "../api";
 import useAuthStore from "../state/authStore";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -21,14 +21,15 @@ const Register = () => {
   } = useForm({
     resolver: zodResolver(registerSchema),
   });
-  const setToken = useAuthStore((state) => state.setToken);
+  const setAuth = useAuthStore((state) => state.setAuth);
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("/api/users/register", data);
+      const response = await api.post("/users/register", data);
       if (response.status === 201) {
-        setToken(response.data.token);
+        const { token, user } = response.data;
+        setAuth(token, user);
         toast.success("Đăng ký thành công!");
         navigate("/");
       }
