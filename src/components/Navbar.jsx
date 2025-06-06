@@ -58,11 +58,13 @@ const Navbar = () => {
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
-              {isAuthenticated && user ? (
+              {isAuthenticated ? (
                 <>
-                  <span className="text-gray-300 mr-4">
-                    Welcome, {user.displayName || user.username}
-                  </span>
+                  {user && (
+                    <span className="text-gray-300 mr-4">
+                      Welcome, {user.displayName || user.username}
+                    </span>
+                  )}
                   <Link to="/dashboard">
                     <button className="bg-purple-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-purple-700 mr-2">
                       Dashboard
@@ -153,13 +155,15 @@ const Navbar = () => {
           </div>
           <div className="pt-4 pb-3 border-t border-gray-700">
             <div className="px-2">
-              {isAuthenticated && user ? (
+              {isAuthenticated ? (
                 <>
-                  <div className="mb-2">
-                    <span className="text-gray-300">
-                      Welcome, {user.displayName || user.username}
-                    </span>
-                  </div>
+                  {user && (
+                    <div className="mb-2">
+                      <span className="text-gray-300">
+                        Welcome, {user.displayName || user.username}
+                      </span>
+                    </div>
+                  )}
                   <Link to="/dashboard">
                     <button className="w-full text-left bg-purple-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-purple-700 mb-2">
                       Dashboard
