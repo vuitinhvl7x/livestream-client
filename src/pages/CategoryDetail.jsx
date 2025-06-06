@@ -31,7 +31,7 @@ const CategoryDetail = () => {
         const streamsResponse = await api.get(
           `/streams?categoryId=${currentCategory.id}`
         );
-        setStreams(streamsResponse.data.data);
+        setStreams(streamsResponse.data.streams);
         setError(null);
       } catch (err) {
         setError("Failed to fetch data for this category.");
