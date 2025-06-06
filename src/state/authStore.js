@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { jwtDecode } from "jwt-decode";
 
 // Helper function to safely parse JSON from localStorage
 const getInitialUserInfo = () => {
@@ -11,27 +12,48 @@ const getInitialUserInfo = () => {
   }
 };
 
-const useAuthStore = create((set) => ({
-  token: localStorage.getItem("token") || null,
-  userInfo: getInitialUserInfo(),
-  isAuthenticated: !!localStorage.getItem("token"),
+const getInitialToken = () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return null;
+  }
+  try {
+    const decoded = jwtDecode(token);
+    if (decoded.exp * 1000 < Date.now()) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("userInfo");
+      return null;
+    }
+    return token;
+  } catch (error) {
+    return null;
+  }
+};
 
-  setAuth: (token, userInfo) => {
-    localStorage.setItem("token", token);
-    localStorage.setItem("userInfo", JSON.stringify(userInfo));
-    set({ token, userInfo, isAuthenticated: true });
-  },
+const useAuthStore = create((set) => {
+  const initialToken = getInitialToken();
+  return {
+    token: initialToken,
+    userInfo: getInitialUserInfo(),
+    isAuthenticated: !!initialToken,
 
-  clearAuth: () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userInfo");
-    set({ token: null, userInfo: null, isAuthenticated: false });
-  },
+    setAuth: (token, userInfo) => {
+      localStorage.setItem("token", token);
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
+      set({ token, userInfo, isAuthenticated: true });
+    },
 
-  setUserInfo: (userInfo) => {
-    localStorage.setItem("userInfo", JSON.stringify(userInfo));
-    set({ userInfo });
-  },
-}));
+    clearAuth: () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("userInfo");
+      set({ token: null, userInfo: null, isAuthenticated: false });
+    },
+
+    setUserInfo: (userInfo) => {
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
+      set({ userInfo });
+    },
+  };
+});
 
 export default useAuthStore;

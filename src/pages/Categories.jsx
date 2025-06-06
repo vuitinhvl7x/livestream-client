@@ -42,12 +42,36 @@ const Categories = () => {
             <Link
               to={`/categories/${category.slug}`}
               key={category.id}
-              className="block bg-gray-800 rounded-lg p-6 shadow-md hover:bg-gray-700 transition-colors duration-200"
+              className="block bg-gray-800 rounded-lg shadow-md hover:bg-gray-700 transition-colors duration-200 overflow-hidden"
             >
-              <h2 className="text-xl font-bold text-purple-400">
-                {category.name}
-              </h2>
-              <p className="text-gray-400 mt-2">{category.description}</p>
+              <img
+                src={
+                  category.thumbnailUrl ||
+                  "https://fakeimg.pl/285x380/282828/eae0d0?text=Category"
+                }
+                alt={category.name}
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                <h2 className="text-xl font-bold text-purple-400 truncate">
+                  {category.name}
+                </h2>
+                <p className="text-gray-400 mt-2 text-sm h-10 overflow-hidden text-ellipsis">
+                  {category.description}
+                </p>
+                {category.tags && category.tags.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {category.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-xs bg-gray-600 text-gray-300 px-2 py-1 rounded-full"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
             </Link>
           ))}
         </div>
