@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import api from "../api";
 import StreamCard from "../components/StreamCard";
+import VodCard from "../components/VodCard";
 
 const CategoryDetail = () => {
   const { slug } = useParams();
@@ -129,9 +130,12 @@ const CategoryDetail = () => {
       {/* Item Grid */}
       {itemsToDisplay.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {itemsToDisplay.map((item) => (
-            <StreamCard key={item.id} data={item} type={currentType} />
-          ))}
+          {itemsToDisplay.map((item) => {
+            if (activeTab === "live") {
+              return <StreamCard key={item.id} data={item} type="stream" />;
+            }
+            return <VodCard key={item.id} data={item} />;
+          })}
         </div>
       ) : (
         <div className="text-center mt-16 text-gray-500">

@@ -2,18 +2,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const StreamCard = ({ data, type }) => {
+const VodCard = ({ data }) => {
   if (!data) {
     return null;
   }
 
-  // Normalize data from either a stream or a VOD object
-  const isLive = type === "stream";
-  const linkUrl = isLive ? `/streams/${data.id}` : `/vods/${data.id}`;
-  const viewCount = isLive ? data.viewerCount : data.viewCount;
-  const countText = isLive ? "viewers" : "views";
-
-  const { id, title, thumbnailUrl, user, category } = data;
+  const { id, title, thumbnailUrl, user, category, viewCount } = data;
+  const linkUrl = `/vods/${id}`;
 
   return (
     <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-200 flex flex-col h-full">
@@ -21,20 +16,13 @@ const StreamCard = ({ data, type }) => {
         <img
           src={
             thumbnailUrl ||
-            `https://fakeimg.pl/440x248/282828/eae0d0?text=${
-              isLive ? "Stream" : "Video"
-            }`
+            `https://fakeimg.pl/440x248/282828/eae0d0?text=Video`
           }
           alt={title}
           className="w-full h-40 object-cover"
         />
-        {isLive && (
-          <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-md">
-            LIVE
-          </div>
-        )}
         <div className="absolute bottom-2 left-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded">
-          {viewCount?.toLocaleString() || 0} {countText}
+          {viewCount?.toLocaleString() || 0} views
         </div>
       </Link>
       <div className="p-4 flex flex-col flex-grow">
@@ -79,4 +67,4 @@ const StreamCard = ({ data, type }) => {
   );
 };
 
-export default StreamCard;
+export default VodCard;

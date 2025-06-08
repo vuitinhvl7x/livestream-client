@@ -11,6 +11,8 @@ import StreamDetail from "../pages/StreamDetail";
 import Categories from "../pages/Categories";
 import CategoryDetail from "../pages/CategoryDetail";
 import Channel from "../pages/Channel";
+import Vods from "../pages/Vods";
+import VodDetail from "../pages/VodDetail";
 
 const Dashboard = () => {
   const userInfo = useAuthStore((state) => state.userInfo);
@@ -43,6 +45,8 @@ const AppRoutes = () => {
       <Route path="/" element={<Home />} />
       <Route path="/streams" element={<Streams />} />
       <Route path="/streams/:streamId" element={<StreamDetail />} />
+      <Route path="/vods" element={<Vods />} />
+      <Route path="/vods/:vodId" element={<VodDetail />} />
       <Route path="/categories" element={<Categories />} />
       <Route path="/categories/:slug" element={<CategoryDetail />} />
       <Route path="/channel/:username" element={<Channel />} />

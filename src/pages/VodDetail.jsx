@@ -1,0 +1,89 @@
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import api from "../api";
+import VideoPlayer from "../components/VideoPlayer";
+
+const VodDetail = () => {
+  const { vodId } = useParams();
+  const [vod, setVod] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchVodDetails = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get(`/vod/${vodId}`);
+        setVod(response.data.data);
+        setError(null);
+      } catch (err) {
+        setError(
+          "Failed to fetch VOD details. The video might not exist or the service is down."
+        );
+        console.error("Error fetching VOD details:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVodDetails();
+  }, [vodId]);
+
+  if (loading) {
+    return <div className="text-center mt-10">Loading VOD...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center mt-10 text-red-500">{error}</div>;
+  }
+
+  if (!vod) {
+    return (
+      <div className="text-center mt-10 text-gray-500">VOD not found.</div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col">
+      <div className="flex-1 w-full flex flex-col">
+        <VideoPlayer src={vod?.videoUrl} />
+        <div className="p-4">
+          <h1 className="text-3xl font-bold">{vod.title}</h1>
+          <p className="text-gray-400 mt-2">{vod.description}</p>
+          <div className="flex items-center mt-4">
+            <Link
+              to={`/channel/${vod.user.username}`}
+              className="flex items-center"
+            >
+              <img
+                src={
+                  vod.user.avatarUrl ||
+                  "https://fakeimg.pl/40/282828/eae0d0?text=A"
+                }
+                alt={vod.user.displayName}
+                className="w-12 h-12 rounded-full mr-4"
+              />
+              <div>
+                <p className="font-bold hover:text-purple-400">
+                  {vod.user.displayName}
+                </p>
+                <p className="text-sm text-gray-500">
+                  {vod.viewCount.toLocaleString()} views
+                </p>
+              </div>
+            </Link>
+          </div>
+          <div className="mt-4">
+            <Link to={`/categories/${vod.category.slug}`}>
+              <span className="text-sm bg-gray-700 text-purple-400 px-3 py-1 rounded-full hover:bg-gray-600">
+                {vod.category.name}
+              </span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default VodDetail;
