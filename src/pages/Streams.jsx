@@ -113,7 +113,7 @@ const Streams = () => {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {streams.map((stream) => (
-              <StreamCard key={stream.id} stream={stream} />
+              <StreamCard key={stream.id} data={stream} type="stream" />
             ))}
           </div>
           {renderPagination()}

@@ -9,19 +9,26 @@ import ChatBox from "../components/ChatBox";
 const StreamDetail = () => {
   const { streamId } = useParams();
   const [stream, setStream] = useState(null);
+  const [vod, setVod] = useState(null);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {
-    // We will fetch stream details and chat messages separately.
-    // Stream details are public, but chat requires authentication.
-    const fetchStreamDetails = async () => {
+    const fetchStreamAndVodDetails = async () => {
       try {
         setLoading(true);
         const streamResponse = await api.get(`/streams/${streamId}`);
-        setStream(streamResponse.data.stream);
+        const currentStream = streamResponse.data.stream;
+        setStream(currentStream);
+
+        if (currentStream.status === "ended") {
+          const vodResponse = await api.get(`/vod?streamId=${streamId}`);
+          if (vodResponse.data.data && vodResponse.data.data.length > 0) {
+            setVod(vodResponse.data.data[0]);
+          }
+        }
         setError(null);
       } catch (err) {
         setError(
@@ -34,20 +41,17 @@ const StreamDetail = () => {
     };
 
     const fetchChatMessages = async () => {
-      // Only fetch messages if the user is authenticated.
       if (isAuthenticated) {
         try {
           const chatResponse = await authApi.get(`/chat/${streamId}/messages`);
           setMessages(chatResponse.data.messages || []);
         } catch (err) {
-          // We don't set a page-level error for chat, just log it.
-          // The ChatBox component can show its own error or empty state.
           console.error("Error fetching chat messages:", err);
         }
       }
     };
 
-    fetchStreamDetails();
+    fetchStreamAndVodDetails();
     fetchChatMessages();
   }, [streamId, isAuthenticated]);
 
@@ -65,10 +69,12 @@ const StreamDetail = () => {
     );
   }
 
+  const isLive = stream.status === "live";
+
   return (
     <div className="flex flex-col lg:flex-row h-[calc(100vh-theme(height.16))]">
       <div className="flex-1 lg:w-3/4 flex flex-col">
-        <VideoPlayer src={stream.playbackUrl} />
+        <VideoPlayer src={isLive ? stream.playbackUrl : vod?.videoUrl} />
         <div className="p-4">
           <h1 className="text-3xl font-bold">{stream.title}</h1>
           <p className="text-gray-400 mt-2">{stream.description}</p>
@@ -89,9 +95,17 @@ const StreamDetail = () => {
                 <p className="font-bold hover:text-purple-400">
                   {stream.user.displayName}
                 </p>
-                <p className="text-sm text-gray-500">
-                  {stream.viewerCount} viewers
-                </p>
+                {isLive ? (
+                  <p className="text-sm text-gray-500">
+                    <span className="text-red-500 font-bold">LIVE</span> |{" "}
+                    {stream.viewerCount} viewers
+                  </p>
+                ) : (
+                  <p className="text-sm text-gray-500">
+                    Stream ended |{" "}
+                    {vod ? `${vod.viewCount} views` : "No VOD available"}
+                  </p>
+                )}
               </div>
             </Link>
           </div>
@@ -105,7 +119,12 @@ const StreamDetail = () => {
         </div>
       </div>
       <aside className="w-full lg:w-1/4">
-        <ChatBox messages={messages} streamId={streamId} />
+        <ChatBox
+          messages={messages}
+          streamId={streamId}
+          isLive={isLive}
+          streamEnded={!isLive && !vod}
+        />
       </aside>
     </div>
   );

@@ -26,3 +26,4 @@ dist-ssr
 task*.md
 roadmap.md
 api-document.md
+websocket.md

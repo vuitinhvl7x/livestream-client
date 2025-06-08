@@ -6,13 +6,14 @@ import StreamCard from "../components/StreamCard";
 const CategoryDetail = () => {
   const { slug } = useParams();
   const [streams, setStreams] = useState([]);
+  const [vods, setVods] = useState([]);
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("live");
 
   useEffect(() => {
-    const fetchStreamsByCategory = async () => {
+    const fetchCategoryData = async () => {
       try {
         setLoading(true);
         const categoryResponse = await api.get(`/categories/${slug}`);
@@ -24,11 +25,17 @@ const CategoryDetail = () => {
           return;
         }
         setCategory(currentCategory);
-        console.log("Đây là data category bạn muốn xem:", currentCategory);
-        const streamsResponse = await api.get(
-          `/streams?categoryId=${currentCategory.id}&limit=50` // Fetch more streams
-        );
+
+        // Fetch live streams and VODs in parallel
+        const [streamsResponse, vodsResponse] = await Promise.all([
+          api.get(
+            `/streams?categoryId=${currentCategory.id}&status=live&limit=50`
+          ),
+          api.get(`/vod?categoryId=${currentCategory.id}&limit=50`),
+        ]);
+
         setStreams(streamsResponse.data.streams || []);
+        setVods(vodsResponse.data.data || []);
         setError(null);
       } catch (err) {
         setError("Failed to fetch data for this category.");
@@ -39,25 +46,17 @@ const CategoryDetail = () => {
     };
 
     if (slug) {
-      fetchStreamsByCategory();
+      fetchCategoryData();
     }
   }, [slug]);
 
-  const liveStreams = useMemo(
-    () => streams.filter((s) => s.status === "live"),
-    [streams]
-  );
-  const endedStreams = useMemo(
-    () => streams.filter((s) => s.status === "ended"),
-    [streams]
-  );
   const totalLiveViewers = useMemo(
-    () =>
-      liveStreams.reduce((sum, stream) => sum + (stream.viewerCount || 0), 0),
-    [liveStreams]
+    () => streams.reduce((sum, stream) => sum + (stream.viewerCount || 0), 0),
+    [streams]
   );
 
-  const streamsToDisplay = activeTab === "live" ? liveStreams : endedStreams;
+  const itemsToDisplay = activeTab === "live" ? streams : vods;
+  const currentType = activeTab === "live" ? "stream" : "vod";
 
   const tabClasses = (tabName) =>
     `px-4 py-2 text-lg font-semibold border-b-4 transition-colors duration-200 ${
@@ -117,23 +116,21 @@ const CategoryDetail = () => {
           onClick={() => setActiveTab("live")}
           className={tabClasses("live")}
         >
-          Live{" "}
-          <span className="text-gray-400 ml-1">({liveStreams.length})</span>
+          Live <span className="text-gray-400 ml-1">({streams.length})</span>
         </button>
         <button
-          onClick={() => setActiveTab("ended")}
-          className={tabClasses("ended")}
+          onClick={() => setActiveTab("videos")}
+          className={tabClasses("videos")}
         >
-          Videos{" "}
-          <span className="text-gray-400 ml-1">({endedStreams.length})</span>
+          Videos <span className="text-gray-400 ml-1">({vods.length})</span>
         </button>
       </div>
 
-      {/* Stream Grid */}
-      {streamsToDisplay.length > 0 ? (
+      {/* Item Grid */}
+      {itemsToDisplay.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {streamsToDisplay.map((stream) => (
-            <StreamCard key={stream.id} stream={stream} />
+          {itemsToDisplay.map((item) => (
+            <StreamCard key={item.id} data={item} type={currentType} />
           ))}
         </div>
       ) : (
