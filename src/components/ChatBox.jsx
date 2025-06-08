@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import io from "socket.io-client";
 import useAuthStore from "../state/authStore";
 
@@ -20,8 +21,8 @@ const ChatBox = ({
   }, [initialMessages]);
 
   useEffect(() => {
-    if (isLive) {
-      // Connect to WebSocket if the stream is live
+    if (isLive && token) {
+      // Connect to WebSocket if the stream is live and user is authenticated
       const socket = io(import.meta.env.VITE_API_BASE_URL, {
         auth: { token },
         transports: ["websocket"],
@@ -120,16 +121,26 @@ const ChatBox = ({
       </div>
       <div className="flex-1 p-4 overflow-y-auto">{renderChatContent()}</div>
       <div className="p-4 border-t border-gray-700">
-        <form onSubmit={handleSendMessage}>
-          <input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder={!isLive ? "Chat is disabled" : "Send a message"}
-            className="w-full bg-gray-700 border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={!isLive}
-          />
-        </form>
+        {token ? (
+          <form onSubmit={handleSendMessage}>
+            <input
+              type="text"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder={!isLive ? "Chat is disabled" : "Send a message"}
+              className="w-full bg-gray-700 border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={!isLive}
+            />
+          </form>
+        ) : (
+          <div className="text-center text-gray-400">
+            Please{" "}
+            <Link to="/login" className="text-purple-400 hover:underline">
+              log in
+            </Link>{" "}
+            to chat.
+          </div>
+        )}
         {streamEnded && (
           <p className="text-xs text-center text-gray-400 mt-2">
             This stream has ended. A VOD is not yet available.

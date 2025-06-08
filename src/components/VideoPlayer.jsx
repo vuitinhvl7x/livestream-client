@@ -108,6 +108,7 @@ const VideoPlayer = ({ src }) => {
           controls
           autoPlay
           muted
+          playsInline
           className="w-full h-full"
         />
       ) : (
