@@ -74,7 +74,7 @@ const StreamDetail = () => {
   return (
     <div className="flex flex-col lg:flex-row h-[calc(100vh-theme(height.16))]">
       <div className="flex-1 lg:w-3/4 flex flex-col">
-        <VideoPlayer src={isLive ? stream.playbackUrl : vod?.videoUrl} />
+        <VideoPlayer src={isLive ? stream.playbackUrls : vod?.videoUrl} />
         <div className="p-4">
           <h1 className="text-3xl font-bold">{stream.title}</h1>
           <p className="text-gray-400 mt-2">{stream.description}</p>
