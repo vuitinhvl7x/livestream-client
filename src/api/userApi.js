@@ -1,0 +1,61 @@
+import authApi from "./authApi";
+
+export const getMyProfile = async () => {
+  try {
+    const response = await authApi.get("/users/me");
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching my profile:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};
+
+export const updateMyProfile = async (formData) => {
+  try {
+    const response = await authApi.put("/users/me/profile", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error updating my profile:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};
+
+export const getFollowers = async (userId, page = 1, limit = 10) => {
+  try {
+    const response = await authApi.get(`/social/${userId}/followers`, {
+      params: { page, limit },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching followers:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};
+
+export const getFollowing = async (userId, page = 1, limit = 10) => {
+  try {
+    const response = await authApi.get(`/social/${userId}/following`, {
+      params: { page, limit },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching following:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};

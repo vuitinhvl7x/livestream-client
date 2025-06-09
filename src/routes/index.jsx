@@ -13,6 +13,14 @@ import CategoryDetail from "../pages/CategoryDetail";
 import Channel from "../pages/Channel";
 import Vods from "../pages/Vods";
 import VodDetail from "../pages/VodDetail";
+import DashboardLayout from "../pages/dashboard/DashboardLayout";
+import DashboardHome from "../pages/dashboard/DashboardHome";
+import ProfileSettings from "../pages/dashboard/ProfileSettings";
+import EditStreamInfo from "../pages/dashboard/EditStreamInfo";
+import MyFollowersList from "../pages/dashboard/MyFollowersList";
+import MyFollowingList from "../pages/dashboard/MyFollowingList";
+import UserNotificationsCenter from "../pages/dashboard/UserNotificationsCenter";
+import CreateStream from "../pages/dashboard/CreateStream";
 
 const Dashboard = () => {
   const userInfo = useAuthStore((state) => state.userInfo);
@@ -60,10 +68,18 @@ const AppRoutes = () => {
         path="/dashboard"
         element={
           <PrivateRoute>
-            <Dashboard />
+            <DashboardLayout />
           </PrivateRoute>
         }
-      />
+      >
+        <Route index element={<DashboardHome />} />
+        <Route path="settings/profile" element={<ProfileSettings />} />
+        <Route path="creator/stream-info/:id" element={<EditStreamInfo />} />
+        <Route path="creator/create-stream" element={<CreateStream />} />
+        <Route path="followers" element={<MyFollowersList />} />
+        <Route path="following" element={<MyFollowingList />} />
+        <Route path="notifications" element={<UserNotificationsCenter />} />
+      </Route>
 
       {/* Fallback Route */}
       <Route path="*" element={<Navigate to="/" replace />} />
