@@ -13,7 +13,6 @@ const DashboardHome = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("loggedInUserId in dashboard home", loggedInUserId);
       if (!loggedInUserId) {
         setLoading(false);
         toast.error("Could not verify user. Please log in again.");

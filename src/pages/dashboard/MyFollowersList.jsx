@@ -12,7 +12,6 @@ const MyFollowersList = () => {
   const userId = useAuthStore((state) => state.userInfo?.id);
 
   useEffect(() => {
-    console.log("userId in my followers list", userId);
     if (!userId) return;
 
     const fetchFollowers = async () => {

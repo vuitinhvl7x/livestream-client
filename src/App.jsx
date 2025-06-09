@@ -25,24 +25,21 @@ const App = () => {
         if (token) {
           try {
             const response = await authApi.get("/users/me");
-            console.log("API RESPONSE from /users/me:", response.data);
 
+            // Kiểm tra kỹ xem `response.data.id` có tồn tại không.
             if (response.data && response.data.id) {
               setUserInfo(response.data);
             } else {
-              console.error(
-                "API did not return valid user data, clearing invalid session."
-              );
+              // Nếu API trả về dữ liệu không hợp lệ, xóa phiên đăng nhập.
               clearAuth();
             }
           } catch (error) {
             // Nếu API báo lỗi (vd: 401 Unauthorized), xóa phiên đăng nhập.
-            console.error("API call to /users/me failed, clearing session.");
             clearAuth();
           }
         }
       } catch (error) {
-        console.error("Failed to rehydrate auth store:", error);
+        // Có lỗi xảy ra trong quá trình rehydrate, vẫn tiếp tục để không kẹt app
       } finally {
         // Bước 4: Dù có chuyện gì xảy ra, cũng phải kết thúc màn hình loading.
         setIsInitializing(false);

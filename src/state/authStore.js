@@ -30,7 +30,6 @@ const useAuthStore = create(
       },
 
       setUserInfo: (userInfo) => {
-        console.log("AUTH STORE: Updating user info with:", userInfo);
         set({ userInfo });
       },
     }),

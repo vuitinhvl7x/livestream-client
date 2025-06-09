@@ -12,7 +12,6 @@ const MyFollowingList = () => {
   const userId = useAuthStore((state) => state.userInfo?.id);
 
   useEffect(() => {
-    console.log("userId in my following list", userId);
     if (!userId) return;
 
     const fetchFollowing = async () => {
