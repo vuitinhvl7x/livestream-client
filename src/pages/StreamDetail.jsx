@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
+import io from "socket.io-client";
 import api from "../api";
 import authApi from "../api/authApi";
 import useAuthStore from "../state/authStore";
@@ -13,7 +14,9 @@ const StreamDetail = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { isAuthenticated } = useAuthStore();
+  const [currentViewers, setCurrentViewers] = useState(0);
+  const { isAuthenticated, token } = useAuthStore();
+  const socketRef = useRef(null);
 
   useEffect(() => {
     const fetchStreamAndVodDetails = async () => {
@@ -22,6 +25,7 @@ const StreamDetail = () => {
         const streamResponse = await api.get(`/streams/${streamId}`);
         const currentStream = streamResponse.data.stream;
         setStream(currentStream);
+        setCurrentViewers(currentStream.viewerCount || 0);
 
         if (currentStream.status === "ended") {
           const vodResponse = await api.get(`/vod?streamId=${streamId}`);
@@ -55,6 +59,34 @@ const StreamDetail = () => {
     fetchChatMessages();
   }, [streamId, isAuthenticated]);
 
+  const isLive = stream?.status === "live";
+
+  useEffect(() => {
+    if (isLive && token) {
+      const socket = io(import.meta.env.VITE_API_BASE_URL, {
+        auth: { token },
+        transports: ["websocket"],
+      });
+      socketRef.current = socket;
+
+      socket.on("connect", () => {
+        socket.emit("join_stream_room", { streamId });
+      });
+
+      socket.on("viewer_count_updated", (data) => {
+        if (data && String(data.streamId) === String(streamId)) {
+          setCurrentViewers(data.count);
+        }
+      });
+
+      return () => {
+        socket.emit("leave_stream_room", { streamId });
+        socket.disconnect();
+        socketRef.current = null;
+      };
+    }
+  }, [streamId, isLive, token]);
+
   if (loading) {
     return <div className="text-center mt-10">Loading stream...</div>;
   }
@@ -68,8 +100,6 @@ const StreamDetail = () => {
       <div className="text-center mt-10 text-gray-500">Stream not found.</div>
     );
   }
-
-  const isLive = stream.status === "live";
 
   return (
     <div className="flex flex-col lg:flex-row h-[calc(100vh-theme(height.16))]">
@@ -98,7 +128,7 @@ const StreamDetail = () => {
                 {isLive ? (
                   <p className="text-sm text-gray-500">
                     <span className="text-red-500 font-bold">LIVE</span> |{" "}
-                    {stream.viewerCount} viewers
+                    {currentViewers} viewers
                   </p>
                 ) : (
                   <p className="text-sm text-gray-500">
@@ -124,6 +154,7 @@ const StreamDetail = () => {
           streamId={streamId}
           isLive={isLive}
           streamEnded={!isLive && !vod}
+          socket={socketRef.current}
         />
       </aside>
     </div>
