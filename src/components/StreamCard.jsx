@@ -1,19 +1,140 @@
 /* eslint-disable react/prop-types */
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import api from "../api";
 
 const StreamCard = ({ data, type }) => {
+  const [vod, setVod] = useState(null);
+  const [isLoading, setIsLoading] = useState(type === "stream");
+
+  useEffect(() => {
+    let isMounted = true;
+    // We still check for a VOD for any card of type "stream" to decide
+    // if we should display it as a VOD card or an ended-stream card.
+    if (type === "stream" && data?.id) {
+      setIsLoading(true);
+      api
+        .get(`/streams/${data.id}/vod`)
+        .then((response) => {
+          if (isMounted && response.data.success) {
+            setVod(response.data.vod);
+          }
+        })
+        .catch(() => {
+          // An error means no VOD exists. We set vod to null and let the
+          // rendering logic decide what to show based on stream status.
+          if (isMounted) {
+            setVod(null);
+          }
+        })
+        .finally(() => {
+          if (isMounted) {
+            setIsLoading(false);
+          }
+        });
+    } else {
+      setIsLoading(false);
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [data, type]);
+
   if (!data) {
     return null;
   }
 
-  // Normalize data from either a stream or a VOD object
-  const isLive = type === "stream";
-  const linkUrl = isLive ? `/streams/${data.id}` : `/vods/${data.id}`;
-  const viewCount = isLive ? data.viewerCount : data.viewCount;
+  if (isLoading) {
+    return (
+      <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden flex flex-col h-full animate-pulse">
+        <div className="w-full h-40 bg-gray-700"></div>
+        <div className="p-4 flex flex-col flex-grow">
+          <div className="flex items-start mt-2">
+            <div className="w-10 h-10 rounded-full mr-3 bg-gray-700"></div>
+            <div className="flex-1">
+              <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
+              <div className="h-4 bg-gray-700 rounded w-1/2"></div>
+            </div>
+          </div>
+          <div className="mt-auto pt-2">
+            <div className="h-4 bg-gray-700 rounded-full w-1/4"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // The primary source of truth for "live" status is now `data.status`.
+  const isLive = type === "stream" && data.status === "live";
+  const hasVod = vod !== null;
+  const isEndedWithoutVod = type === "stream" && !isLive && !hasVod;
+
+  // Case: Stream has ended and no VOD is available.
+  // We render a disabled card to inform the user.
+  if (isEndedWithoutVod) {
+    const { title, thumbnailUrl, user, category } = data;
+    return (
+      <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden flex flex-col h-full relative cursor-not-allowed group">
+        <div className="relative">
+          <img
+            src={
+              thumbnailUrl ||
+              `https://fakeimg.pl/440x248/282828/eae0d0?text=Stream+Ended`
+            }
+            alt={title}
+            className="w-full h-40 object-cover filter grayscale"
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center transition-opacity opacity-0 group-hover:opacity-100">
+            <p className="text-white font-semibold text-center px-4">
+              Video không có sẵn
+            </p>
+          </div>
+        </div>
+        <div className="p-4 flex flex-col flex-grow">
+          <div className="flex items-start mt-2">
+            <img
+              src={
+                user.avatarUrl ||
+                `https://fakeimg.pl/40/282828/eae0d0?text=${user.username
+                  .charAt(0)
+                  .toUpperCase()}`
+              }
+              alt={user.username}
+              className="w-10 h-10 rounded-full mr-3"
+            />
+            <div className="flex-1">
+              <h3 className="text-md font-bold truncate text-gray-500">
+                {title}
+              </h3>
+              <p className="text-sm text-gray-400 block truncate">
+                {user.displayName || user.username}
+              </p>
+            </div>
+          </div>
+          {category && (
+            <div className="mt-auto pt-2">
+              <span className="text-xs bg-gray-700 text-gray-500 px-2 py-1 rounded-full">
+                {category.name}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // If a VOD was found for an ended stream, we display the VOD data.
+  // Otherwise, we display the original stream/VOD data.
+  const displayData = type === "stream" && hasVod ? vod : data;
+
+  const linkUrl = isLive
+    ? `/streams/${displayData.id}`
+    : `/vods/${displayData.id}`;
+  const viewCount = isLive ? displayData.viewerCount : displayData.viewCount;
   const countText = isLive ? "viewers" : "views";
 
-  const { id, title, thumbnailUrl, user, category } = data;
+  const { title, thumbnailUrl, user, category } = displayData;
 
   return (
     <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-200 flex flex-col h-full">
@@ -67,7 +188,7 @@ const StreamCard = ({ data, type }) => {
         </div>
         {category && (
           <div className="mt-auto pt-2">
-            <Link to={`/categories/${category.slug}`}>
+            <Link to={category.slug ? `/categories/${category.slug}` : "#"}>
               <span className="text-xs bg-gray-700 text-purple-400 px-2 py-1 rounded-full hover:bg-gray-600">
                 {category.name}
               </span>

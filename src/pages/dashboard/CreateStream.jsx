@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { createStream } from "../../api/streamApi";
-import { getCategories } from "../../api/categoryApi";
+import { getCategories, searchCategories } from "../../api/categoryApi";
 import { toast } from "sonner";
-import { Copy } from "lucide-react";
+import { Copy, X, Loader2 } from "lucide-react";
 
 const createStreamSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters").max(255),
@@ -63,10 +63,20 @@ const CreateStream = () => {
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const [newStreamData, setNewStreamData] = useState(null);
 
+  // State for category search
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const searchContainerRef = useRef(null);
+
   const {
     register,
     handleSubmit,
     watch,
+    setValue,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(createStreamSchema),
@@ -78,6 +88,47 @@ const CreateStream = () => {
       .catch(() => toast.error("Failed to load categories."));
   }, []);
 
+  // Debounce search query
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setSearchResults([]);
+      setIsDropdownVisible(false);
+      return;
+    }
+
+    setIsDropdownVisible(true);
+    const debounceTimer = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const data = await searchCategories(searchQuery);
+        setSearchResults(data.categories);
+      } catch (error) {
+        toast.error("Failed to search for categories.");
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300); // 300ms debounce delay
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery]);
+
+  // Click outside handler for search dropdown
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target)
+      ) {
+        setIsDropdownVisible(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [searchContainerRef]);
+
   const thumbnailFile = watch("thumbnailFile");
   useEffect(() => {
     if (thumbnailFile && thumbnailFile.length > 0) {
@@ -85,8 +136,24 @@ const CreateStream = () => {
       const reader = new FileReader();
       reader.onloadend = () => setThumbnailPreview(reader.result);
       reader.readAsDataURL(file);
+    } else {
+      setThumbnailPreview(null);
     }
   }, [thumbnailFile]);
+
+  const handleSelectCategory = (category) => {
+    setSelectedCategory(category);
+    setValue("categoryId", category.id, { shouldValidate: true });
+    clearErrors("categoryId");
+    setSearchQuery("");
+    setSearchResults([]);
+    setIsDropdownVisible(false);
+  };
+
+  const handleRemoveCategory = () => {
+    setSelectedCategory(null);
+    setValue("categoryId", "", { shouldValidate: true });
+  };
 
   const onSubmit = async (data) => {
     const formData = new FormData();
@@ -216,25 +283,82 @@ const CreateStream = () => {
           ></textarea>
         </div>
 
-        <div>
+        <div ref={searchContainerRef}>
           <label
-            htmlFor="categoryId"
+            htmlFor="category-search"
             className="block text-sm font-medium text-gray-700"
           >
             Category
           </label>
-          <select
-            id="categoryId"
-            {...register("categoryId")}
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-          >
-            <option value="">Select a category</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
+          {selectedCategory ? (
+            <div className="mt-1 flex items-center justify-between p-2 border border-gray-300 rounded-md bg-gray-50">
+              <div className="flex items-center gap-3">
+                <img
+                  src={
+                    selectedCategory.thumbnailUrl ||
+                    `https://via.placeholder.com/40x53?text=${selectedCategory.name}`
+                  }
+                  alt={selectedCategory.name}
+                  className="w-10 h-[53px] object-cover rounded"
+                />
+                <span className="font-semibold">{selectedCategory.name}</span>
+              </div>
+              <button
+                type="button"
+                onClick={handleRemoveCategory}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+          ) : (
+            <div className="relative">
+              <input
+                id="category-search"
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsDropdownVisible(true)}
+                autoComplete="off"
+                placeholder="Search for a category"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+              {isDropdownVisible && (
+                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-80 overflow-y-auto">
+                  {isSearching ? (
+                    <div className="p-3 flex items-center justify-center text-gray-500">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Searching...
+                    </div>
+                  ) : searchResults.length > 0 ? (
+                    searchResults.map((cat) => (
+                      <div
+                        key={cat.id}
+                        className="p-2 hover:bg-gray-100 cursor-pointer flex items-center gap-3"
+                        onMouseDown={() => handleSelectCategory(cat)}
+                      >
+                        <img
+                          src={
+                            cat.thumbnailUrl ||
+                            `https://via.placeholder.com/40x53?text=${cat.name}`
+                          }
+                          alt={cat.name}
+                          className="w-10 h-[53px] object-cover rounded"
+                        />
+                        <span>{cat.name}</span>
+                      </div>
+                    ))
+                  ) : (
+                    searchQuery && (
+                      <p className="p-3 text-gray-500">No results found.</p>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+          {/* Hidden input to hold the categoryId for react-hook-form */}
+          <input type="hidden" {...register("categoryId")} />
           {errors.categoryId && (
             <p className="text-red-500 text-sm mt-1">
               {errors.categoryId.message}

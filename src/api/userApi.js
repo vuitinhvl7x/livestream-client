@@ -1,4 +1,5 @@
 import authApi from "./authApi";
+import api from "./index";
 
 export const getMyProfile = async () => {
   try {
@@ -7,6 +8,45 @@ export const getMyProfile = async () => {
   } catch (error) {
     console.error(
       "Error fetching my profile:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};
+
+export const getUserProfile = async (username) => {
+  try {
+    const response = await authApi.get(`/users/profile/${username}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching profile for ${username}:`,
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};
+
+export const followUser = async (userId) => {
+  try {
+    const response = await authApi.post(`/social/${userId}/follow`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error following user ${userId}:`,
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};
+
+export const unfollowUser = async (userId) => {
+  try {
+    const response = await authApi.delete(`/social/${userId}/unfollow`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error unfollowing user ${userId}:`,
       error.response?.data || error.message
     );
     throw error.response?.data || error;
