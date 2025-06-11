@@ -1,7 +1,10 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
+import useAuthStore from "../../state/authStore";
 
 const DashboardLayout = () => {
+  const userInfo = useAuthStore((state) => state.userInfo);
+
   const navLinks = [
     { to: "/dashboard", text: "Dashboard" },
     { to: "/dashboard/settings/profile", text: "Profile Settings" },
@@ -9,6 +12,13 @@ const DashboardLayout = () => {
     { to: "/dashboard/following", text: "Following" },
     { to: "/dashboard/notifications", text: "Notifications" },
   ];
+
+  if (userInfo && userInfo.username) {
+    navLinks.splice(1, 0, {
+      to: `/channel/${userInfo.username}`,
+      text: "My Channel",
+    });
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-900 text-gray-300">
@@ -23,7 +33,7 @@ const DashboardLayout = () => {
                   end={link.to === "/dashboard"}
                   className={({ isActive }) =>
                     `block py-2 px-4 rounded transition-colors duration-200 ${
-                      isActive ? "bg-gray-100 " : "hover:bg-gray-800"
+                      isActive ? "bg-sky-500 text-white" : "hover:bg-gray-700"
                     }`
                   }
                 >
