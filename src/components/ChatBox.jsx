@@ -56,15 +56,17 @@ const ChatBox = ({
             index // Use index for key if msg.id is not unique
           ) => (
             <div key={msg._id || index} className="mb-3 break-words">
-              <span className="font-bold text-purple-400">
+              <span className="font-bold text-sky-400">
                 {msg.username || msg.user?.displayName}:
               </span>
-              <span className="ml-2">{msg.message || msg.content}</span>
+              <span className="ml-2 text-gray-300">
+                {msg.message || msg.content}
+              </span>
             </div>
           )
         )
       ) : (
-        <div className="text-gray-500 text-center">
+        <div className="text-gray-300 text-center">
           Chat is live. Be the first to say something!
         </div>
       );
@@ -73,14 +75,14 @@ const ChatBox = ({
     return initialMessages && initialMessages.length > 0 ? (
       initialMessages.map((msg) => (
         <div key={msg.id} className="mb-3 break-words">
-          <span className="font-bold text-purple-400">
+          <span className="font-bold text-sky-400">
             {msg.user.displayName}:
           </span>
-          <span className="ml-2">{msg.content}</span>
+          <span className="ml-2 text-gray-300">{msg.content}</span>
         </div>
       ))
     ) : (
-      <div className="text-gray-500 text-center">
+      <div className="text-gray-300 text-center">
         No chat history available for this stream.
       </div>
     );
@@ -89,7 +91,7 @@ const ChatBox = ({
   return (
     <div className="bg-gray-800 h-full flex flex-col">
       <div className="p-4 border-b border-gray-700">
-        <h2 className="text-lg font-bold">Stream Chat</h2>
+        <h2 className="text-xl font-semibold text-gray-100">Stream Chat</h2>
       </div>
       <div className="flex-1 p-4 overflow-y-auto">{renderChatContent()}</div>
       <div className="p-4 border-t border-gray-700">
@@ -101,15 +103,15 @@ const ChatBox = ({
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Send a message"
-                className="w-full bg-gray-700 border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full bg-gray-700 border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-sky-500 text-white"
               />
             </form>
           ) : (
-            <div className="text-center text-gray-400">
+            <div className="text-center text-gray-300">
               Please{" "}
               <Link
                 to="/account/login"
-                className="text-purple-400 hover:underline"
+                className="text-sky-400 hover:text-sky-300"
               >
                 log in
               </Link>{" "}
@@ -117,12 +119,12 @@ const ChatBox = ({
             </div>
           )
         ) : (
-          <div className="text-center text-gray-500">
+          <div className="text-center text-gray-300">
             Chat is only available during live streams.
           </div>
         )}
         {streamEnded && (
-          <p className="text-xs text-center text-gray-400 mt-2">
+          <p className="text-xs text-center text-gray-300 mt-2">
             This stream has ended. A VOD is not yet available.
           </p>
         )}

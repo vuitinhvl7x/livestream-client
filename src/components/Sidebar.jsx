@@ -32,15 +32,15 @@ const Sidebar = () => {
 
   return (
     <div className="p-2">
-      <h2 className="text-sm font-bold mb-2 uppercase tracking-wider text-gray-400 px-2">
+      <h2 className="text-xl font-semibold text-gray-100 mb-2 px-2">
         Followed Channels
       </h2>
       {!isAuthenticated ? (
         <div className="px-2">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-300">
             <Link
               to="/account/login"
-              className="text-indigo-400 hover:underline"
+              className="text-sky-400 hover:text-sky-300"
             >
               Log in
             </Link>{" "}
@@ -48,7 +48,7 @@ const Sidebar = () => {
           </p>
         </div>
       ) : loading ? (
-        <div className="px-2 text-gray-400">Loading...</div>
+        <div className="px-2 text-gray-300">Loading...</div>
       ) : following.length > 0 ? (
         <ul className="space-y-1">
           {following.map((user) => (
@@ -70,7 +70,7 @@ const Sidebar = () => {
           ))}
         </ul>
       ) : (
-        <p className="text-sm text-gray-400 px-2">
+        <p className="text-sm text-gray-300 px-2">
           You are not following any channels yet.
         </p>
       )}

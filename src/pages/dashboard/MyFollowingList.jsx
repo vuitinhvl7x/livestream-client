@@ -30,17 +30,18 @@ const MyFollowingList = () => {
     fetchFollowing();
   }, [userId, page]);
 
-  if (loading) return <div>Loading following list...</div>;
+  if (loading)
+    return <div className="text-gray-300">Loading following list...</div>;
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Channels I Follow</h1>
+      <h1 className="text-2xl font-bold text-white mb-6">Channels I Follow</h1>
       {following.length > 0 ? (
         <div className="space-y-4">
           {following.map((user) => (
             <div
               key={user.id}
-              className="flex items-center bg-white p-4 rounded-lg shadow"
+              className="flex items-center bg-gray-800 p-4 rounded-lg shadow"
             >
               <img
                 src={user.avatarUrl}
@@ -49,7 +50,7 @@ const MyFollowingList = () => {
               />
               <Link
                 to={`/channel/${user.username}`}
-                className="text-lg font-semibold text-indigo-600 hover:underline"
+                className="text-lg font-semibold text-sky-400 hover:text-sky-300 hover:underline"
               >
                 {user.username}
               </Link>
@@ -57,7 +58,7 @@ const MyFollowingList = () => {
           ))}
         </div>
       ) : (
-        <p>You are not following any channels yet.</p>
+        <p className="text-gray-300">You are not following any channels yet.</p>
       )}
 
       {totalPages > 1 && (
@@ -65,17 +66,17 @@ const MyFollowingList = () => {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+            className="px-4 py-2 bg-gray-700 text-gray-300 rounded disabled:opacity-50 hover:bg-gray-600"
           >
             Previous
           </button>
-          <span>
+          <span className="text-gray-300">
             Page {page} of {totalPages}
           </span>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+            className="px-4 py-2 bg-gray-700 text-gray-300 rounded disabled:opacity-50 hover:bg-gray-600"
           >
             Next
           </button>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,10 +9,12 @@ import { toast } from "sonner";
 
 export const registerSchema = z.object({
   username: z.string().min(3, "Username phải có ít nhất 3 ký tự"),
+  displayName: z.string().min(3, "Tên hiển thị phải có ít nhất 3 ký tự"),
   password: z.string().min(6, "Password phải có ít nhất 6 ký tự"),
 });
 
 const Register = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -70,28 +72,128 @@ const Register = () => {
   };
 
   return (
-    <div>
-      <h2>Đăng Ký</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label htmlFor="username">Username</label>
-          <input id="username" type="text" {...register("username")} />
-          {errors.username && (
-            <p style={{ color: "red" }}>{errors.username.message}</p>
-          )}
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input id="password" type="password" {...register("password")} />
-          {errors.password && (
-            <p style={{ color: "red" }}>{errors.password.message}</p>
-          )}
-        </div>
-        <button type="submit">Đăng Ký</button>
-      </form>
-      <p>
-        Đã có tài khoản? <Link to="/account/login">Đăng nhập</Link>
-      </p>
+    <div className="flex min-h-screen items-center justify-center bg-gray-900 text-white">
+      <div className="w-full max-w-md space-y-6 rounded-lg bg-gray-800 p-8 shadow-md">
+        <h2 className="text-center text-2xl font-bold text-white">Register</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div>
+            <label
+              htmlFor="username"
+              className="mb-2 block text-sm font-medium text-gray-300"
+            >
+              Username
+            </label>
+            <input
+              id="username"
+              type="text"
+              {...register("username")}
+              className="w-full rounded-lg border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:border-sky-500 focus:outline-none focus:ring-sky-500"
+            />
+            {errors.username && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.username.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="displayName"
+              className="mb-2 block text-sm font-medium text-gray-300"
+            >
+              Display Name
+            </label>
+            <input
+              id="displayName"
+              type="text"
+              {...register("displayName")}
+              className="w-full rounded-lg border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:border-sky-500 focus:outline-none focus:ring-sky-500"
+            />
+            {errors.displayName && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.displayName.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="mb-2 block text-sm font-medium text-gray-300"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                {...register("password")}
+                className="w-full rounded-lg border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:border-sky-500 focus:outline-none focus:ring-sky-500"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-400 hover:text-gray-200"
+              >
+                {showPassword ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="h-5 w-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.243 4.243l-4.243-4.243"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="h-5 w-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M2.036 12.322a1.012 1.012 0 010-.639l4.418-4.418a1.012 1.012 0 011.414 0l4.418 4.418a1.012 1.012 0 010 1.414l-4.418 4.418a1.012 1.012 0 01-1.414 0l-4.418-4.418z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                )}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+          <button
+            type="submit"
+            className="w-full rounded-lg bg-sky-600 px-4 py-2 text-white hover:bg-sky-700 focus:outline-none focus:ring-4 focus:ring-sky-800"
+          >
+            Register
+          </button>
+        </form>
+        <p className="text-center text-sm text-gray-300">
+          Already have an account?{" "}
+          <Link
+            to="/account/login"
+            className="font-medium text-sky-400 hover:text-sky-300"
+          >
+            Login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

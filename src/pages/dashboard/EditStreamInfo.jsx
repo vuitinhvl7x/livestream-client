@@ -107,12 +107,13 @@ const EditStreamInfo = () => {
     }
   };
 
-  if (loading) return <div>Loading stream info...</div>;
-  if (!stream) return <div>Stream not found.</div>;
+  if (loading)
+    return <div className="text-gray-300">Loading stream info...</div>;
+  if (!stream) return <div className="text-gray-300">Stream not found.</div>;
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Edit Stream Info</h1>
+      <h1 className="text-2xl font-bold text-white mb-6">Edit Stream Info</h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {thumbnailPreview && (
@@ -125,7 +126,7 @@ const EditStreamInfo = () => {
         <div>
           <label
             htmlFor="thumbnailFile"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-300"
           >
             Thumbnail
           </label>
@@ -133,7 +134,7 @@ const EditStreamInfo = () => {
             id="thumbnailFile"
             type="file"
             {...register("thumbnailFile")}
-            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+            className="mt-1 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-sky-600 file:text-white hover:file:bg-sky-700"
           />
           {errors.thumbnailFile && (
             <p className="text-red-500 text-sm mt-1">
@@ -145,7 +146,7 @@ const EditStreamInfo = () => {
         <div>
           <label
             htmlFor="title"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-300"
           >
             Title
           </label>
@@ -153,7 +154,7 @@ const EditStreamInfo = () => {
             id="title"
             type="text"
             {...register("title")}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 text-white"
           />
           {errors.title && (
             <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
@@ -163,7 +164,7 @@ const EditStreamInfo = () => {
         <div>
           <label
             htmlFor="description"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-300"
           >
             Description
           </label>
@@ -171,7 +172,7 @@ const EditStreamInfo = () => {
             id="description"
             rows="3"
             {...register("description")}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 text-white"
           ></textarea>
           {errors.description && (
             <p className="text-red-500 text-sm mt-1">
@@ -183,14 +184,14 @@ const EditStreamInfo = () => {
         <div>
           <label
             htmlFor="categoryId"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-300"
           >
             Category
           </label>
           <select
             id="categoryId"
             {...register("categoryId")}
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            className="mt-1 block w-full pl-3 pr-10 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 text-white sm:text-sm"
           >
             <option value="">Select a category</option>
             {categories.map((cat) => (

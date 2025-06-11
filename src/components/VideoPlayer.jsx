@@ -112,7 +112,7 @@ const VideoPlayer = ({ src }) => {
           className="w-full h-full"
         />
       ) : (
-        <div className="w-full h-full flex items-center justify-center bg-gray-900 text-white">
+        <div className="w-full h-full flex items-center justify-center bg-gray-900 text-gray-300">
           <p>Video feed is not available.</p>
         </div>
       )}

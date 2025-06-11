@@ -92,11 +92,12 @@ const ProfileSettings = () => {
     }
   };
 
-  if (loading) return <div>Loading profile settings...</div>;
+  if (loading)
+    return <div className="text-gray-300">Loading profile settings...</div>;
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Profile Settings</h1>
+      <h1 className="text-2xl font-bold text-white mb-6">Profile Settings</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="flex items-center gap-4">
           {avatarPreview && (
@@ -109,7 +110,7 @@ const ProfileSettings = () => {
           <div>
             <label
               htmlFor="avatarFile"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-300"
             >
               Avatar
             </label>
@@ -117,7 +118,7 @@ const ProfileSettings = () => {
               id="avatarFile"
               type="file"
               {...register("avatarFile")}
-              className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+              className="mt-1 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-sky-600 file:text-white hover:file:bg-sky-700"
             />
             {errors.avatarFile && (
               <p className="text-red-500 text-sm mt-1">
@@ -130,7 +131,7 @@ const ProfileSettings = () => {
         <div>
           <label
             htmlFor="displayName"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-300"
           >
             Display Name
           </label>
@@ -138,7 +139,7 @@ const ProfileSettings = () => {
             id="displayName"
             type="text"
             {...register("displayName")}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 text-white"
           />
           {errors.displayName && (
             <p className="text-red-500 text-sm mt-1">
@@ -150,7 +151,7 @@ const ProfileSettings = () => {
         <div>
           <label
             htmlFor="bio"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-300"
           >
             Bio
           </label>
@@ -158,7 +159,7 @@ const ProfileSettings = () => {
             id="bio"
             rows="3"
             {...register("bio")}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 text-white"
           ></textarea>
           {errors.bio && (
             <p className="text-red-500 text-sm mt-1">{errors.bio.message}</p>

@@ -52,8 +52,10 @@ const Categories = () => {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`px-4 py-2 mx-1 rounded ${
-            i === pagination.page ? "bg-purple-600 text-white" : "bg-gray-700"
+          className={`px-4 py-2 mx-1 rounded text-white ${
+            i === pagination.page
+              ? "bg-sky-600"
+              : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
           {i}
@@ -64,7 +66,11 @@ const Categories = () => {
   };
 
   if (loading) {
-    return <div className="text-center mt-10">Loading categories...</div>;
+    return (
+      <div className="text-center mt-10 text-gray-300">
+        Loading categories...
+      </div>
+    );
   }
 
   if (error) {
@@ -73,7 +79,7 @@ const Categories = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">All Categories</h1>
+      <h1 className="text-2xl font-bold text-white mb-6">All Categories</h1>
       {categories.length > 0 ? (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -92,10 +98,10 @@ const Categories = () => {
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-4">
-                  <h2 className="text-xl font-bold text-purple-400 truncate">
+                  <h2 className="text-xl font-semibold text-gray-100 truncate">
                     {category.name}
                   </h2>
-                  <p className="text-gray-400 mt-2 text-sm h-10 overflow-hidden text-ellipsis">
+                  <p className="text-gray-300 mt-2 text-sm h-10 overflow-hidden text-ellipsis">
                     {category.description}
                   </p>
                   {category.tags && category.tags.length > 0 && (
@@ -117,7 +123,7 @@ const Categories = () => {
           {renderPagination()}
         </>
       ) : (
-        <div className="text-center mt-10 text-gray-500">
+        <div className="text-center mt-10 text-gray-300">
           No categories found.
         </div>
       )}

@@ -111,12 +111,14 @@ const Channel = () => {
   const tabClasses = (tabName) =>
     `px-4 py-2 text-lg font-semibold border-b-4 transition-colors duration-200 ${
       activeTab === tabName
-        ? "border-purple-500 text-white"
-        : "border-transparent text-gray-400 hover:text-gray-200"
+        ? "border-sky-500 text-white"
+        : "border-transparent text-gray-300 hover:text-white"
     }`;
 
   if (loading) {
-    return <div className="text-center mt-10">Loading channel...</div>;
+    return (
+      <div className="text-center mt-10 text-gray-300">Loading channel...</div>
+    );
   }
 
   if (error) {
@@ -125,7 +127,9 @@ const Channel = () => {
 
   if (!profile) {
     return (
-      <div className="text-center mt-10">This channel does not exist.</div>
+      <div className="text-center mt-10 text-gray-300">
+        This channel does not exist.
+      </div>
     );
   }
 
@@ -139,13 +143,13 @@ const Channel = () => {
             "https://fakeimg.pl/150/282828/eae0d0?text=User"
           }
           alt={profile.displayName}
-          className="w-32 h-32 sm:w-36 sm:h-36 rounded-full border-4 border-purple-500 object-cover"
+          className="w-32 h-32 sm:w-36 sm:h-36 rounded-full border-4 border-sky-500 object-cover"
         />
         <div className="sm:ml-6 mt-4 sm:mt-0 text-center sm:text-left flex-grow">
-          <h1 className="text-4xl lg:text-5xl font-bold">
+          <h1 className="text-2xl font-bold text-white">
             {profile.displayName || profile.username}
           </h1>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-2 justify-center sm:justify-start text-gray-400">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-2 justify-center sm:justify-start text-gray-300">
             <span>@{profile.username}</span>
             <span className="hidden sm:inline">·</span>
             <span>
@@ -171,7 +175,7 @@ const Channel = () => {
               className={`px-6 py-2 rounded-md font-semibold text-white transition-colors duration-200 w-40 text-center ${
                 isFollowing
                   ? "bg-gray-600 hover:bg-gray-500"
-                  : "bg-purple-600 hover:bg-purple-700"
+                  : "bg-sky-600 hover:bg-sky-700"
               } ${isFollowLoading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               {isFollowLoading
@@ -190,13 +194,13 @@ const Channel = () => {
           onClick={() => setActiveTab("streams")}
           className={tabClasses("streams")}
         >
-          Streams <span className="text-gray-400 ml-1">({streams.length})</span>
+          Streams <span className="text-gray-300 ml-1">({streams.length})</span>
         </button>
         <button
           onClick={() => setActiveTab("videos")}
           className={tabClasses("videos")}
         >
-          Videos <span className="text-gray-400 ml-1">({vods.length})</span>
+          Videos <span className="text-gray-300 ml-1">({vods.length})</span>
         </button>
       </div>
 
@@ -211,8 +215,8 @@ const Channel = () => {
           })}
         </div>
       ) : (
-        <div className="text-center mt-16 text-gray-500">
-          <h3 className="text-2xl font-bold">
+        <div className="text-center mt-16 text-gray-300">
+          <h3 className="text-xl font-semibold text-gray-100">
             {activeTab === "streams" ? "No live content" : "No videos"}
           </h3>
           <p className="mt-2">

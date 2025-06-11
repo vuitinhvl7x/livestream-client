@@ -112,17 +112,17 @@ const StreamCard = ({ data, type }) => {
               className="w-10 h-10 rounded-full mr-3"
             />
             <div className="flex-1">
-              <h3 className="text-md font-bold truncate text-gray-500">
+              <h3 className="text-xl font-semibold text-gray-100 opacity-50 truncate">
                 {title}
               </h3>
-              <p className="text-sm text-gray-400 block truncate">
+              <p className="text-sm text-gray-300 opacity-70 block truncate">
                 {user.displayName || user.username}
               </p>
             </div>
           </div>
           {category && (
             <div className="mt-auto pt-2">
-              <span className="text-xs bg-gray-700 text-gray-500 px-2 py-1 rounded-full">
+              <span className="text-xs bg-gray-700 text-gray-400 px-2 py-1 rounded-full">
                 {category.name}
               </span>
             </div>
@@ -181,14 +181,14 @@ const StreamCard = ({ data, type }) => {
             />
           </Link>
           <div className="flex-1">
-            <h3 className="text-md font-bold truncate">
-              <Link to={linkUrl} className="hover:text-purple-400">
+            <h3 className="text-xl font-semibold text-gray-100 truncate">
+              <Link to={linkUrl} className="text-sky-400 hover:text-sky-300">
                 {title}
               </Link>
             </h3>
             <Link
               to={`/channel/${user.username}`}
-              className="text-sm text-gray-400 hover:text-white block truncate"
+              className="text-sm text-gray-300 hover:text-white block truncate"
             >
               {user.displayName || user.username}
             </Link>
@@ -197,7 +197,7 @@ const StreamCard = ({ data, type }) => {
         {category && (
           <div className="mt-auto pt-2">
             <Link to={category.slug ? `/categories/${category.slug}` : "#"}>
-              <span className="text-xs bg-gray-700 text-purple-400 px-2 py-1 rounded-full hover:bg-gray-600">
+              <span className="text-xs bg-gray-700 text-sky-400 px-2 py-1 rounded-full hover:bg-gray-600 hover:text-sky-300">
                 {category.name}
               </span>
             </Link>

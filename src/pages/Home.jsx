@@ -32,10 +32,10 @@ const Home = () => {
         <Sidebar />
       </aside>
       <main className="ml-64 flex-1 p-4">
-        <h1 className="text-3xl font-bold mb-6">Live Streams</h1>
+        <h1 className="text-2xl font-bold text-white mb-6">Live Streams</h1>
         {error && <div className="text-center mt-10 text-red-500">{error}</div>}
         {loading ? (
-          <div className="text-center mt-10">Loading...</div>
+          <div className="text-center mt-10 text-gray-300">Loading...</div>
         ) : !error && streams.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {streams.map((stream) => (
@@ -44,7 +44,7 @@ const Home = () => {
           </div>
         ) : (
           !error && (
-            <div className="text-center mt-10 text-gray-500">
+            <div className="text-center mt-10 text-gray-300">
               No live streams available right now.
             </div>
           )

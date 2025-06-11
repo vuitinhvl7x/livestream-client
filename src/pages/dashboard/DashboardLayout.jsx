@@ -11,19 +11,21 @@ const DashboardLayout = () => {
   ];
 
   return (
-    <div className="flex">
-      <aside className="w-64 bg-gray-800 text-white p-4">
-        <h2 className="text-xl font-bold mb-4">Menu</h2>
+    <div className="flex min-h-screen bg-gray-900 text-gray-300">
+      <aside className="w-64 flex-shrink-0 bg-gray-800 p-4">
+        <h2 className="text-2xl font-bold mb-6 text-white">Menu</h2>
         <nav>
           <ul>
             {navLinks.map((link) => (
-              <li key={link.to}>
+              <li key={link.to} className="mb-2">
                 <NavLink
                   to={link.to}
                   end={link.to === "/dashboard"}
                   className={({ isActive }) =>
-                    `block py-2 px-4 rounded ${
-                      isActive ? "bg-gray-700" : "hover:bg-gray-700"
+                    `block py-2 px-4 rounded transition-colors duration-200 ${
+                      isActive
+                        ? "bg-sky-600 text-white font-semibold"
+                        : "text-sky-400 hover:bg-gray-700 hover:text-sky-300"
                     }`
                   }
                 >
@@ -34,7 +36,7 @@ const DashboardLayout = () => {
           </ul>
         </nav>
       </aside>
-      <main className="flex-1 p-6 bg-gray-100">
+      <main className="flex-1 p-6 lg:p-10">
         <Outlet />
       </main>
     </div>

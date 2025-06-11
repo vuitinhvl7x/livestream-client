@@ -38,11 +38,11 @@ const DashboardHome = () => {
   }, [loggedInUserId]);
 
   if (loading) {
-    return <div>Loading dashboard...</div>;
+    return <div className="text-gray-300">Loading dashboard...</div>;
   }
 
   if (!user) {
-    return <div>Could not load user profile.</div>;
+    return <div className="text-gray-300">Could not load user profile.</div>;
   }
 
   return (
@@ -55,15 +55,17 @@ const DashboardHome = () => {
             className="w-24 h-24 rounded-full"
           />
           <div>
-            <h1 className="text-3xl font-bold">{user.displayName}</h1>
-            <p className="text-gray-600">{user.bio || "No bio provided."}</p>
+            <h1 className="text-2xl font-bold text-white">
+              {user.displayName}
+            </h1>
+            <p className="text-gray-300">{user.bio || "No bio provided."}</p>
           </div>
         </div>
       </div>
 
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">My Streams</h2>
+          <h2 className="text-2xl font-bold text-white">My Streams</h2>
           <Link
             to="/dashboard/creator/create-stream"
             className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
@@ -74,15 +76,20 @@ const DashboardHome = () => {
         {streams.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {streams.map((stream) => (
-              <div key={stream.id} className="bg-white p-4 rounded-lg shadow">
+              <div
+                key={stream.id}
+                className="bg-gray-800 p-4 rounded-lg shadow"
+              >
                 <img
                   src={stream.thumbnailUrl}
                   alt={stream.title}
                   className="w-full h-40 object-cover rounded-md mb-4"
                 />
-                <h3 className="text-xl font-semibold">{stream.title}</h3>
-                <p className="text-gray-500 capitalize">{stream.status}</p>
-                <p className="mt-2 text-sm text-gray-700">
+                <h3 className="text-xl font-semibold text-gray-100">
+                  {stream.title}
+                </h3>
+                <p className="text-gray-300 capitalize">{stream.status}</p>
+                <p className="mt-2 text-sm text-gray-300">
                   {stream.description}
                 </p>
                 <Link
@@ -95,7 +102,7 @@ const DashboardHome = () => {
             ))}
           </div>
         ) : (
-          <p>You have not created any streams yet.</p>
+          <p className="text-gray-300">You have not created any streams yet.</p>
         )}
       </div>
     </div>

@@ -62,12 +62,14 @@ const CategoryDetail = () => {
   const tabClasses = (tabName) =>
     `px-4 py-2 text-lg font-semibold border-b-4 transition-colors duration-200 ${
       activeTab === tabName
-        ? "border-purple-500 text-white"
-        : "border-transparent text-gray-400 hover:text-gray-200"
+        ? "border-sky-500 text-white"
+        : "border-transparent text-gray-300 hover:text-white"
     }`;
 
   if (loading) {
-    return <div className="text-center mt-10">Loading streams...</div>;
+    return (
+      <div className="text-center mt-10 text-gray-300">Loading streams...</div>
+    );
   }
 
   if (error) {
@@ -75,7 +77,9 @@ const CategoryDetail = () => {
   }
 
   if (!category) {
-    return <div className="text-center mt-10">Category not found.</div>;
+    return (
+      <div className="text-center mt-10 text-gray-300">Category not found.</div>
+    );
   }
 
   return (
@@ -91,8 +95,8 @@ const CategoryDetail = () => {
           className="w-32 md:w-44 rounded-lg shadow-md"
         />
         <div className="flex-1">
-          <h1 className="text-4xl md:text-6xl font-bold">{category.name}</h1>
-          <p className="text-purple-400 font-semibold mt-2">
+          <h1 className="text-2xl font-bold text-white">{category.name}</h1>
+          <p className="text-gray-300 font-semibold mt-2">
             {totalLiveViewers.toLocaleString()} viewers
           </p>
           <div className="flex flex-wrap gap-2 my-4">
@@ -105,7 +109,7 @@ const CategoryDetail = () => {
               </span>
             ))}
           </div>
-          <p className="text-gray-400 mt-4 text-sm max-w-4xl">
+          <p className="text-gray-300 mt-4 text-sm max-w-4xl">
             {category.description}
           </p>
         </div>
@@ -138,8 +142,10 @@ const CategoryDetail = () => {
           })}
         </div>
       ) : (
-        <div className="text-center mt-16 text-gray-500">
-          <h3 className="text-2xl font-bold">No {activeTab} content</h3>
+        <div className="text-center mt-16 text-gray-300">
+          <h3 className="text-xl font-semibold text-gray-100">
+            No {activeTab} content
+          </h3>
           <p className="mt-2">
             There are no {activeTab === "live" ? "live channels" : "videos"} in
             this category right now.

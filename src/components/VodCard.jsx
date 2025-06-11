@@ -40,14 +40,14 @@ const VodCard = ({ data }) => {
             />
           </Link>
           <div className="flex-1">
-            <h3 className="text-md font-bold truncate">
-              <Link to={linkUrl} className="hover:text-purple-400">
+            <h3 className="text-xl font-semibold text-gray-100 truncate">
+              <Link to={linkUrl} className="text-sky-400 hover:text-sky-300">
                 {title}
               </Link>
             </h3>
             <Link
               to={`/channel/${user.username}`}
-              className="text-sm text-gray-400 hover:text-white block truncate"
+              className="text-sm text-gray-300 hover:text-white block truncate"
             >
               {user.displayName || user.username}
             </Link>
@@ -56,7 +56,7 @@ const VodCard = ({ data }) => {
         {category && (
           <div className="mt-auto pt-2">
             <Link to={`/categories/${category.slug}`}>
-              <span className="text-xs bg-gray-700 text-purple-400 px-2 py-1 rounded-full hover:bg-gray-600">
+              <span className="text-xs bg-gray-700 text-sky-400 px-2 py-1 rounded-full hover:bg-gray-600 hover:text-sky-300">
                 {category.name}
               </span>
             </Link>

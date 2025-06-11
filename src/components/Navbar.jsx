@@ -31,7 +31,7 @@ const Navbar = () => {
     `px-3 py-2 rounded-md text-sm font-medium ${
       isActive
         ? "bg-gray-900 text-white"
-        : "text-gray-300 hover:bg-gray-700 hover:text-white"
+        : "text-sky-400 hover:bg-gray-700 hover:text-sky-300"
     }`;
 
   return (

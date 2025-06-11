@@ -37,18 +37,18 @@ const CopyableField = ({ label, value }) => {
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700">{label}</label>
+      <label className="block text-sm font-medium text-gray-300">{label}</label>
       <div className="mt-1 flex rounded-md shadow-sm">
         <input
           type="text"
           readOnly
           value={value}
-          className="flex-1 block w-full rounded-none rounded-l-md sm:text-sm border-gray-300 bg-gray-100"
+          className="flex-1 block w-full rounded-none rounded-l-md sm:text-sm border-gray-600 bg-gray-700 text-gray-300"
         />
         <button
           type="button"
           onClick={onCopy}
-          className="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 hover:bg-gray-100"
+          className="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-600 bg-gray-600 text-gray-300 hover:bg-gray-500"
         >
           <Copy className="h-5 w-5" />
         </button>
@@ -178,16 +178,16 @@ const CreateStream = () => {
   if (newStreamData) {
     return (
       <div className="max-w-2xl mx-auto text-center">
-        <h1 className="text-2xl font-bold mb-4">
+        <h1 className="text-2xl font-bold text-white mb-4">
           Stream Created Successfully!
         </h1>
-        <p className="mb-6 text-gray-600">
+        <p className="mb-6 text-gray-300">
           Use the details below to configure your streaming software (e.g.,
           OBS).
         </p>
 
         <div
-          className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6"
+          className="bg-yellow-900 bg-opacity-20 border-l-4 border-yellow-400 text-yellow-200 p-4 mb-6"
           role="alert"
         >
           <p className="font-bold">Important Security Notice</p>
@@ -197,8 +197,8 @@ const CreateStream = () => {
           </p>
         </div>
 
-        <div className="space-y-4 bg-gray-50 p-4 rounded-lg mb-6 border border-gray-200 text-left">
-          <h2 className="text-xl font-semibold text-center mb-4">
+        <div className="space-y-4 bg-gray-800 p-4 rounded-lg mb-6 border border-gray-700 text-left">
+          <h2 className="text-xl font-semibold text-gray-100 text-center mb-4">
             Streaming Keys
           </h2>
           <CopyableField
@@ -221,19 +221,19 @@ const CreateStream = () => {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Create New Stream</h1>
+      <h1 className="text-2xl font-bold text-white mb-6">Create New Stream</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {thumbnailPreview && (
           <img
             src={thumbnailPreview}
             alt="Thumbnail Preview"
-            className="w-full h-auto object-cover rounded-md bg-gray-100"
+            className="w-full h-auto object-cover rounded-md bg-gray-800"
           />
         )}
         <div>
           <label
             htmlFor="thumbnailFile"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-300"
           >
             Thumbnail (Optional)
           </label>
@@ -241,7 +241,7 @@ const CreateStream = () => {
             id="thumbnailFile"
             type="file"
             {...register("thumbnailFile")}
-            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+            className="mt-1 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-sky-600 file:text-white hover:file:bg-sky-700"
           />
           {errors.thumbnailFile && (
             <p className="text-red-500 text-sm mt-1">
@@ -253,7 +253,7 @@ const CreateStream = () => {
         <div>
           <label
             htmlFor="title"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-300"
           >
             Title
           </label>
@@ -261,7 +261,7 @@ const CreateStream = () => {
             id="title"
             type="text"
             {...register("title")}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 text-white"
           />
           {errors.title && (
             <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
@@ -271,7 +271,7 @@ const CreateStream = () => {
         <div>
           <label
             htmlFor="description"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-300"
           >
             Description (Optional)
           </label>
@@ -279,19 +279,19 @@ const CreateStream = () => {
             id="description"
             rows="3"
             {...register("description")}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 text-white"
           ></textarea>
         </div>
 
         <div ref={searchContainerRef}>
           <label
             htmlFor="category-search"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-300"
           >
             Category
           </label>
           {selectedCategory ? (
-            <div className="mt-1 flex items-center justify-between p-2 border border-gray-300 rounded-md bg-gray-50">
+            <div className="mt-1 flex items-center justify-between p-2 border border-gray-600 rounded-md bg-gray-700">
               <div className="flex items-center gap-3">
                 <img
                   src={
@@ -301,12 +301,14 @@ const CreateStream = () => {
                   alt={selectedCategory.name}
                   className="w-10 h-[53px] object-cover rounded"
                 />
-                <span className="font-semibold">{selectedCategory.name}</span>
+                <span className="font-semibold text-gray-100">
+                  {selectedCategory.name}
+                </span>
               </div>
               <button
                 type="button"
                 onClick={handleRemoveCategory}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-400 hover:text-white"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -321,12 +323,12 @@ const CreateStream = () => {
                 onFocus={() => setIsDropdownVisible(true)}
                 autoComplete="off"
                 placeholder="Search for a category"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 text-white"
               />
               {isDropdownVisible && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-80 overflow-y-auto">
+                <div className="absolute z-10 w-full mt-1 bg-gray-800 border border-gray-600 rounded-md shadow-lg max-h-80 overflow-y-auto">
                   {isSearching ? (
-                    <div className="p-3 flex items-center justify-center text-gray-500">
+                    <div className="p-3 flex items-center justify-center text-gray-400">
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Searching...
                     </div>
@@ -334,7 +336,7 @@ const CreateStream = () => {
                     searchResults.map((cat) => (
                       <div
                         key={cat.id}
-                        className="p-2 hover:bg-gray-100 cursor-pointer flex items-center gap-3"
+                        className="p-2 hover:bg-gray-700 cursor-pointer flex items-center gap-3"
                         onMouseDown={() => handleSelectCategory(cat)}
                       >
                         <img
@@ -345,12 +347,12 @@ const CreateStream = () => {
                           alt={cat.name}
                           className="w-10 h-[53px] object-cover rounded"
                         />
-                        <span>{cat.name}</span>
+                        <span className="text-gray-300">{cat.name}</span>
                       </div>
                     ))
                   ) : (
                     searchQuery && (
-                      <p className="p-3 text-gray-500">No results found.</p>
+                      <p className="p-3 text-gray-400">No results found.</p>
                     )
                   )}
                 </div>

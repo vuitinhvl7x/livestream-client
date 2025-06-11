@@ -61,8 +61,10 @@ const Streams = () => {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`px-4 py-2 mx-1 rounded ${
-            i === pagination.page ? "bg-purple-600 text-white" : "bg-gray-700"
+          className={`px-4 py-2 mx-1 rounded text-white ${
+            i === pagination.page
+              ? "bg-sky-600"
+              : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
           {i}
@@ -73,7 +75,7 @@ const Streams = () => {
   };
 
   if (loading) {
-    return <div className="text-center mt-10">Loading...</div>;
+    return <div className="text-center mt-10 text-gray-300">Loading...</div>;
   }
 
   if (error) {
@@ -82,28 +84,28 @@ const Streams = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Browse Streams</h1>
+      <h1 className="text-2xl font-bold text-white mb-6">Browse Streams</h1>
       <div className="flex space-x-4 mb-6">
         <button
           onClick={() => handleStatusChange("")}
-          className={`px-4 py-2 rounded ${
-            !status ? "bg-purple-600" : "bg-gray-700"
+          className={`px-4 py-2 rounded text-white ${
+            !status ? "bg-sky-600" : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
           All
         </button>
         <button
           onClick={() => handleStatusChange("live")}
-          className={`px-4 py-2 rounded ${
-            status === "live" ? "bg-purple-600" : "bg-gray-700"
+          className={`px-4 py-2 rounded text-white ${
+            status === "live" ? "bg-sky-600" : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
           Live
         </button>
         <button
           onClick={() => handleStatusChange("ended")}
-          className={`px-4 py-2 rounded ${
-            status === "ended" ? "bg-purple-600" : "bg-gray-700"
+          className={`px-4 py-2 rounded text-white ${
+            status === "ended" ? "bg-sky-600" : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
           Ended
@@ -119,7 +121,7 @@ const Streams = () => {
           {renderPagination()}
         </>
       ) : (
-        <div className="text-center mt-10 text-gray-500">
+        <div className="text-center mt-10 text-gray-300">
           No streams found for the selected filter.
         </div>
       )}

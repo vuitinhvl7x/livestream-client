@@ -76,7 +76,7 @@ const UserNotificationsCenter = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Notifications</h1>
+      <h1 className="text-2xl font-bold text-white mb-6">Notifications</h1>
 
       <div className="mb-4 flex justify-between items-center">
         <select
@@ -85,7 +85,7 @@ const UserNotificationsCenter = () => {
             setPage(1);
             setFilter(e.target.value);
           }}
-          className="p-2 border rounded-md"
+          className="p-2 border rounded-md bg-gray-800 text-gray-300 border-gray-600 focus:ring-sky-500 focus:border-sky-500"
         >
           <option value="">All</option>
           <option value="false">Unread</option>
@@ -101,7 +101,7 @@ const UserNotificationsCenter = () => {
       </div>
 
       {loading ? (
-        <div>Loading notifications...</div>
+        <div className="text-gray-300">Loading notifications...</div>
       ) : notifications.length > 0 ? (
         <div className="space-y-4">
           {notifications.map((notification) => (
@@ -110,13 +110,13 @@ const UserNotificationsCenter = () => {
               onClick={() => handleMarkAsRead(notification.id)}
               className={`p-4 rounded-lg shadow flex items-start gap-4 transition-colors duration-200 ${
                 notification.isRead
-                  ? "bg-white"
-                  : "bg-blue-50 border-l-4 border-blue-500 cursor-pointer hover:bg-blue-100"
+                  ? "bg-gray-800"
+                  : "bg-gray-700 border-l-4 border-sky-400 cursor-pointer hover:bg-gray-600"
               }`}
             >
               <div>
-                <p className="text-gray-800">{notification.message}</p>
-                <span className="text-sm text-gray-500">
+                <p className="text-gray-300">{notification.message}</p>
+                <span className="text-sm text-gray-300">
                   {formatDistanceToNow(new Date(notification.createdAt), {
                     addSuffix: true,
                   })}
@@ -126,7 +126,7 @@ const UserNotificationsCenter = () => {
           ))}
         </div>
       ) : (
-        <p>You have no notifications.</p>
+        <p className="text-gray-300">You have no notifications.</p>
       )}
 
       {totalPages > 1 && (
@@ -134,17 +134,17 @@ const UserNotificationsCenter = () => {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+            className="px-4 py-2 bg-gray-700 text-gray-300 rounded disabled:opacity-50 hover:bg-gray-600"
           >
             Previous
           </button>
-          <span>
+          <span className="text-gray-300">
             Page {page} of {totalPages}
           </span>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+            className="px-4 py-2 bg-gray-700 text-gray-300 rounded disabled:opacity-50 hover:bg-gray-600"
           >
             Next
           </button>
