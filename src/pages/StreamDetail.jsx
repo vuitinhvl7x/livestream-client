@@ -1,11 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import io from "socket.io-client";
 import api from "../api";
 import authApi from "../api/authApi";
 import useAuthStore from "../state/authStore";
 import VideoPlayer from "../components/VideoPlayer";
 import ChatBox from "../components/ChatBox";
+import useSocket from "../hooks/useSocket";
+import { joinStreamRoom, leaveStreamRoom } from "../lib/socket";
 
 const StreamDetail = () => {
   const { streamId } = useParams();
@@ -15,8 +16,10 @@ const StreamDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentViewers, setCurrentViewers] = useState(0);
-  const { isAuthenticated, token } = useAuthStore();
-  const socketRef = useRef(null);
+  const { isAuthenticated } = useAuthStore();
+  const { socket, isConnected } = useSocket();
+
+  const isLive = stream?.status === "live";
 
   useEffect(() => {
     const fetchStreamAndVodDetails = async () => {
@@ -59,33 +62,24 @@ const StreamDetail = () => {
     fetchChatMessages();
   }, [streamId, isAuthenticated]);
 
-  const isLive = stream?.status === "live";
-
   useEffect(() => {
-    if (isLive && token) {
-      const socket = io(import.meta.env.VITE_API_BASE_URL, {
-        auth: { token },
-        transports: ["websocket"],
-      });
-      socketRef.current = socket;
+    if (socket && isConnected && isLive) {
+      joinStreamRoom(streamId);
 
-      socket.on("connect", () => {
-        socket.emit("join_stream_room", { streamId });
-      });
-
-      socket.on("viewer_count_updated", (data) => {
+      const handleViewerCount = (data) => {
         if (data && String(data.streamId) === String(streamId)) {
           setCurrentViewers(data.count);
         }
-      });
+      };
+
+      socket.on("viewer_count_updated", handleViewerCount);
 
       return () => {
-        socket.emit("leave_stream_room", { streamId });
-        socket.disconnect();
-        socketRef.current = null;
+        leaveStreamRoom(streamId);
+        socket.off("viewer_count_updated", handleViewerCount);
       };
     }
-  }, [streamId, isLive, token]);
+  }, [streamId, isLive, socket, isConnected]);
 
   if (loading) {
     return <div className="text-center mt-10">Loading stream...</div>;
@@ -154,7 +148,7 @@ const StreamDetail = () => {
           streamId={streamId}
           isLive={isLive}
           streamEnded={!isLive && !vod}
-          socket={socketRef.current}
+          socket={socket}
         />
       </aside>
     </div>

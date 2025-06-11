@@ -6,6 +6,7 @@ import api from "../api";
 import useAuthStore from "../state/authStore";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { connectSocket } from "../lib/socket";
 
 export const loginSchema = z.object({
   username: z.string().min(1, "Username không được để trống"),
@@ -30,6 +31,7 @@ const Login = () => {
       if (response.status === 200) {
         const { token, user } = response.data;
         setAuth(token, user);
+        connectSocket();
         toast.success("Đăng nhập thành công!");
         navigate("/");
       }

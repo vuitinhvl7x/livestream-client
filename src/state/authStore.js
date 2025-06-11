@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { jwtDecode } from "jwt-decode";
 import { persist } from "zustand/middleware";
+import { disconnectSocket } from "../lib/socket";
 
 const useAuthStore = create(
   persist(
@@ -26,6 +27,7 @@ const useAuthStore = create(
       },
 
       clearAuth: () => {
+        disconnectSocket();
         set({ token: null, userInfo: null, isAuthenticated: false });
       },
 

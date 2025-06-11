@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { sendChatMessage } from "../lib/socket";
 
 const ChatBox = ({
   messages: initialMessages,
@@ -18,12 +19,12 @@ const ChatBox = ({
   }, [initialMessages]);
 
   useEffect(() => {
+    console.log("socket in Chatbox", socket);
     if (socket) {
       // The parent component is now responsible for connecting and joining the room.
       // This component just needs to listen for chat-related events.
       socket.on("recent_chat_history", ({ messages }) => {
-        console.log("Received recent chat history");
-        setChatMessages(messages);
+        setChatMessages(() => messages);
       });
 
       socket.on("new_message", (message) => {
@@ -41,10 +42,7 @@ const ChatBox = ({
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (newMessage.trim() && socket && socket.connected) {
-      socket.emit("chat_message", {
-        streamId,
-        message: newMessage,
-      });
+      sendChatMessage(streamId, newMessage);
       setNewMessage("");
     }
   };
@@ -57,7 +55,7 @@ const ChatBox = ({
             msg,
             index // Use index for key if msg.id is not unique
           ) => (
-            <div key={msg.id || index} className="mb-3 break-words">
+            <div key={msg._id || index} className="mb-3 break-words">
               <span className="font-bold text-purple-400">
                 {msg.username || msg.user?.displayName}:
               </span>

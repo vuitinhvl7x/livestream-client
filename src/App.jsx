@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import Layout from "./components/Layout";
 import useAuthStore from "./state/authStore";
 import authApi, { injectNavigate } from "./api/authApi";
+import { connectSocket } from "./lib/socket";
 
 const App = () => {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const App = () => {
             // Kiểm tra kỹ xem `response.data.id` có tồn tại không.
             if (response.data && response.data.id) {
               setUserInfo(response.data);
+              connectSocket();
             } else {
               // Nếu API trả về dữ liệu không hợp lệ, xóa phiên đăng nhập.
               clearAuth();

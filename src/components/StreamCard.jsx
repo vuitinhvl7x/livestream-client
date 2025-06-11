@@ -20,11 +20,19 @@ const StreamCard = ({ data, type }) => {
             setVod(response.data.vod);
           }
         })
-        .catch(() => {
-          // An error means no VOD exists. We set vod to null and let the
-          // rendering logic decide what to show based on stream status.
-          if (isMounted) {
-            setVod(null);
+        .catch((error) => {
+          // If the error is a 404, it just means no VOD exists. This is an
+          // expected case, so we don't need to log it as an error.
+          if (error.response && error.response.status === 404) {
+            if (isMounted) {
+              setVod(null);
+            }
+          } else {
+            // For any other errors (e.g., server issues), we still log them.
+            console.error("Error checking for VOD:", error);
+            if (isMounted) {
+              setVod(null);
+            }
           }
         })
         .finally(() => {
