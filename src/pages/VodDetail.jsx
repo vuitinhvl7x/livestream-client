@@ -75,13 +75,15 @@ const VodDetail = () => {
               </div>
             </Link>
           </div>
-          <div className="mt-4">
-            <Link to={`/categories/${vod.category.slug}`}>
-              <span className="text-sm bg-gray-700 text-sky-400 px-3 py-1 rounded-full hover:bg-gray-600 hover:text-sky-300">
-                {vod.category.name}
-              </span>
-            </Link>
-          </div>
+          {vod.category && (
+            <div className="mt-4">
+              <Link to={`/categories/${vod.category.slug}`}>
+                <span className="text-sm bg-gray-700 text-sky-400 px-3 py-1 rounded-full hover:bg-gray-600 hover:text-sky-300">
+                  {vod.category.name}
+                </span>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>
