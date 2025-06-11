@@ -44,3 +44,11 @@ export const deleteVOD = async (vodId) => {
     throw error.response?.data || error;
   }
 };
+
+const vodApi = {
+  searchVODs: (params) => {
+    return api.get("/vod/search", { params });
+  },
+};
+
+export default vodApi;

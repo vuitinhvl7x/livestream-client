@@ -60,3 +60,11 @@ export const createStream = async (formData) => {
     throw error.response?.data || error;
   }
 };
+
+const streamApi = {
+  searchStreams: (params) => {
+    return api.get("/stream/search", { params });
+  },
+};
+
+export default streamApi;
