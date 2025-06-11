@@ -98,7 +98,7 @@ const StreamDetail = () => {
       <div className="text-center mt-10 text-gray-300">Stream not found.</div>
     );
   }
-  console.log("stream.user.avatarUrl in stream detail", stream.user.avatarUrl);
+  // console.log("stream.user.avatarUrl in stream detail", stream.user.avatarUrl);
   return (
     <div className="flex flex-col lg:flex-row h-[calc(100vh-theme(height.16))]">
       <div className="flex-1 lg:w-3/4 flex flex-col">

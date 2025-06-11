@@ -5,6 +5,7 @@ import { z } from "zod";
 import { getMyProfile, updateMyProfile } from "../../api/userApi";
 import useAuthStore from "../../state/authStore";
 import { toast } from "sonner";
+import { getImageUrl } from "../../utils/image";
 
 const profileSchema = z.object({
   displayName: z.string().min(3, "Display name must be at least 3 characters"),
@@ -102,7 +103,7 @@ const ProfileSettings = () => {
         <div className="flex items-center gap-4">
           {avatarPreview && (
             <img
-              src={avatarPreview}
+              src={getImageUrl(avatarPreview)}
               alt="Avatar Preview"
               className="w-24 h-24 rounded-full object-cover"
             />

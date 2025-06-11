@@ -3,6 +3,7 @@ import { Link, useNavigate, NavLink } from "react-router-dom";
 import useAuthStore from "../state/authStore";
 import authApi from "../api/authApi";
 import { toast } from "sonner";
+import logo from "../../public/logo.png";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -39,8 +40,12 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="text-white font-bold text-xl">
-              StreamCo
+            <Link
+              to="/"
+              className="flex items-center text-white font-bold text-xl"
+            >
+              <img src={logo} alt="LiveX Logo" className="h-8 w-auto mr-2" />
+              LiveX
             </Link>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">

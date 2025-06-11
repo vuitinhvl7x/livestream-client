@@ -136,7 +136,7 @@ const StreamCard = ({ data, type }) => {
   const countText = isLive ? "viewers" : "views";
 
   const { title, thumbnailUrl, user, category } = displayData;
-  console.log("user.avatarUrl in stream card", user);
+  // console.log("user.avatarUrl in stream card", user);
   return (
     <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-200 flex flex-col h-full">
       <Link to={linkUrl} className="relative">

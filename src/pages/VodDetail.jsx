@@ -46,7 +46,7 @@ const VodDetail = () => {
       <div className="text-center mt-10 text-gray-300">VOD not found.</div>
     );
   }
-  console.log("vod.user.avatarUrl in vod detail", vod.user.avatarUrl);
+  // console.log("vod.user.avatarUrl in vod detail", vod.user.avatarUrl);
 
   return (
     <div className="flex flex-col">

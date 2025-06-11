@@ -19,7 +19,7 @@ const ChatBox = ({
   }, [initialMessages]);
 
   useEffect(() => {
-    console.log("socket in Chatbox", socket);
+      // console.log("socket in Chatbox", socket);
     if (socket) {
       // The parent component is now responsible for connecting and joining the room.
       // This component just needs to listen for chat-related events.
