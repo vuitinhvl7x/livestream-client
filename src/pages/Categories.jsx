@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import api from "../api";
+import { getImageUrl } from "../utils/image";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
@@ -90,10 +91,7 @@ const Categories = () => {
                 className="block bg-gray-800 rounded-lg shadow-md hover:bg-gray-700 transition-colors duration-200 overflow-hidden"
               >
                 <img
-                  src={
-                    category.thumbnailUrl ||
-                    "https://fakeimg.pl/285x380/282828/eae0d0?text=Category"
-                  }
+                  src={getImageUrl(category.thumbnailUrl)}
                   alt={category.name}
                   className="w-full h-48 object-cover"
                 />

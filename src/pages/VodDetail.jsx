@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../api";
 import VideoPlayer from "../components/VideoPlayer";
+import ExpandableText from "../components/ExpandableText";
+import { getImageUrl } from "../utils/image";
 
 const VodDetail = () => {
   const { vodId } = useParams();
@@ -44,6 +46,7 @@ const VodDetail = () => {
       <div className="text-center mt-10 text-gray-300">VOD not found.</div>
     );
   }
+  console.log("vod.user.avatarUrl in vod detail", vod.user.avatarUrl);
 
   return (
     <div className="flex flex-col">
@@ -51,17 +54,14 @@ const VodDetail = () => {
         <VideoPlayer src={vod?.videoUrl} />
         <div className="p-4">
           <h1 className="text-2xl font-bold text-white">{vod.title}</h1>
-          <p className="text-gray-300 mt-2">{vod.description}</p>
+          <ExpandableText>{vod.description}</ExpandableText>
           <div className="flex items-center mt-4">
             <Link
               to={`/channel/${vod.user.username}`}
               className="flex items-center"
             >
               <img
-                src={
-                  vod.user.avatarUrl ||
-                  "https://fakeimg.pl/40/282828/eae0d0?text=A"
-                }
+                src={getImageUrl(vod.user.avatarUrl)}
                 alt={vod.user.displayName}
                 className="w-12 h-12 rounded-full mr-4"
               />

@@ -4,6 +4,7 @@ import { getMyProfile } from "../../api/userApi";
 import { getStreams } from "../../api/streamApi";
 import useAuthStore from "../../state/authStore";
 import { toast } from "sonner";
+import { getImageUrl } from "../../utils/image";
 
 const DashboardHome = () => {
   const [user, setUser] = useState(null);
@@ -50,7 +51,7 @@ const DashboardHome = () => {
       <div className="mb-8">
         <div className="flex items-center gap-4">
           <img
-            src={user.avatarUrl}
+            src={getImageUrl(user.avatarUrl)}
             alt={user.displayName}
             className="w-24 h-24 rounded-full"
           />
@@ -68,7 +69,7 @@ const DashboardHome = () => {
           <h2 className="text-2xl font-bold text-white">My Streams</h2>
           <Link
             to="/dashboard/creator/create-stream"
-            className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+            className="bg-gray-800 text-sky-400 py-2 px-4 rounded hover:bg-gray-700 transition-colors"
           >
             Create New Stream
           </Link>
@@ -81,7 +82,7 @@ const DashboardHome = () => {
                 className="bg-gray-800 p-4 rounded-lg shadow"
               >
                 <img
-                  src={stream.thumbnailUrl}
+                  src={getImageUrl(stream.thumbnailUrl)}
                   alt={stream.title}
                   className="w-full h-40 object-cover rounded-md mb-4"
                 />
@@ -94,7 +95,7 @@ const DashboardHome = () => {
                 </p>
                 <Link
                   to={`/dashboard/creator/stream-info/${stream.id}`}
-                  className="mt-4 inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                  className="mt-4 inline-block bg-transparent hover:bg-sky-500 text-sky-400 font-semibold hover:text-white py-2 px-4 border border-sky-500 hover:border-transparent rounded transition-colors"
                 >
                   Edit Stream
                 </Link>

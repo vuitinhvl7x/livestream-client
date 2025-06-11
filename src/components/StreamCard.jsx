@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../api";
+import { getImageUrl } from "../utils/image";
 
 const StreamCard = ({ data, type }) => {
   const [vod, setVod] = useState(null);
@@ -86,10 +87,7 @@ const StreamCard = ({ data, type }) => {
       <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden flex flex-col h-full relative cursor-not-allowed group">
         <div className="relative">
           <img
-            src={
-              thumbnailUrl ||
-              `https://fakeimg.pl/440x248/282828/eae0d0?text=Stream+Ended`
-            }
+            src={getImageUrl(thumbnailUrl)}
             alt={title}
             className="w-full h-40 object-cover filter grayscale"
           />
@@ -102,14 +100,9 @@ const StreamCard = ({ data, type }) => {
         <div className="p-4 flex flex-col flex-grow">
           <div className="flex items-start mt-2">
             <img
-              src={
-                user.avatarUrl ||
-                `https://fakeimg.pl/40/282828/eae0d0?text=${user.username
-                  .charAt(0)
-                  .toUpperCase()}`
-              }
+              src={getImageUrl(user.avatarUrl)}
               alt={user.username}
-              className="w-10 h-10 rounded-full mr-3"
+              className="w-10 h-10 rounded-full mr-3 object-cover flex-shrink-0"
             />
             <div className="flex-1">
               <h3 className="text-xl font-semibold text-gray-100 opacity-50 truncate">
@@ -143,17 +136,12 @@ const StreamCard = ({ data, type }) => {
   const countText = isLive ? "viewers" : "views";
 
   const { title, thumbnailUrl, user, category } = displayData;
-
+  console.log("user.avatarUrl in stream card", user);
   return (
     <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-200 flex flex-col h-full">
       <Link to={linkUrl} className="relative">
         <img
-          src={
-            thumbnailUrl ||
-            `https://fakeimg.pl/440x248/282828/eae0d0?text=${
-              isLive ? "Stream" : "Video"
-            }`
-          }
+          src={getImageUrl(thumbnailUrl)}
           alt={title}
           className="w-full h-40 object-cover"
         />
@@ -168,16 +156,11 @@ const StreamCard = ({ data, type }) => {
       </Link>
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex items-start mt-2">
-          <Link to={`/channel/${user.username}`}>
+          <Link to={`/channel/${user.username}`} className="flex-shrink-0">
             <img
-              src={
-                user.avatarUrl ||
-                `https://fakeimg.pl/40/282828/eae0d0?text=${user.username
-                  .charAt(0)
-                  .toUpperCase()}`
-              }
+              src={getImageUrl(user.avatarUrl)}
               alt={user.username}
-              className="w-10 h-10 rounded-full mr-3"
+              className="w-10 h-10 rounded-full mr-3 object-cover"
             />
           </Link>
           <div className="flex-1">

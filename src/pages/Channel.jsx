@@ -11,6 +11,7 @@ import {
 } from "../api/userApi";
 import { getStreams } from "../api/streamApi";
 import { getVodsByUserId } from "../api/vodApi";
+import { getImageUrl } from "../utils/image";
 
 const Channel = () => {
   const { username } = useParams();
@@ -138,10 +139,7 @@ const Channel = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-center sm:items-start bg-gray-800 p-6 rounded-lg mb-8">
         <img
-          src={
-            profile.avatarUrl ||
-            "https://fakeimg.pl/150/282828/eae0d0?text=User"
-          }
+          src={getImageUrl(profile.avatarUrl)}
           alt={profile.displayName}
           className="w-32 h-32 sm:w-36 sm:h-36 rounded-full border-4 border-sky-500 object-cover"
         />

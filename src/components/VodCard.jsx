@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { Link } from "react-router-dom";
+import { getImageUrl } from "../utils/image";
 
 const VodCard = ({ data }) => {
   if (!data) {
@@ -9,15 +10,12 @@ const VodCard = ({ data }) => {
 
   const { id, title, thumbnailUrl, user, category, viewCount } = data;
   const linkUrl = `/vods/${id}`;
-
+  console.log("user.avatarUrl in vod card", user.avatarUrl);
   return (
     <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-200 flex flex-col h-full">
       <Link to={linkUrl} className="relative">
         <img
-          src={
-            thumbnailUrl ||
-            `https://fakeimg.pl/440x248/282828/eae0d0?text=Video`
-          }
+          src={getImageUrl(thumbnailUrl)}
           alt={title}
           className="w-full h-40 object-cover"
         />
@@ -27,16 +25,11 @@ const VodCard = ({ data }) => {
       </Link>
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex items-start mt-2">
-          <Link to={`/channel/${user.username}`}>
+          <Link to={`/channel/${user.username}`} className="flex-shrink-0">
             <img
-              src={
-                user.avatarUrl ||
-                `https://fakeimg.pl/40/282828/eae0d0?text=${user.username
-                  .charAt(0)
-                  .toUpperCase()}`
-              }
+              src={getImageUrl(user.avatarUrl)}
               alt={user.username}
-              className="w-10 h-10 rounded-full mr-3"
+              className="w-10 h-10 rounded-full mr-3 object-cover"
             />
           </Link>
           <div className="flex-1">

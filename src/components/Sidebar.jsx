@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getFollowing } from "../api/userApi";
 import useAuthStore from "../state/authStore";
+import { getImageUrl } from "../utils/image";
 
 const Sidebar = () => {
   const [following, setFollowing] = useState([]);
@@ -58,7 +59,7 @@ const Sidebar = () => {
                 className="flex items-center p-2 rounded hover:bg-gray-700"
               >
                 <img
-                  src={user.avatarUrl}
+                  src={getImageUrl(user.avatarUrl)}
                   alt={user.username}
                   className="w-8 h-8 rounded-full mr-3"
                 />

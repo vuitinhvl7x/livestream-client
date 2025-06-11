@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getFollowers } from "../../api/userApi";
 import useAuthStore from "../../state/authStore";
 import { toast } from "sonner";
+import { getImageUrl } from "../../utils/image";
 
 const MyFollowersList = () => {
   const [followers, setFollowers] = useState([]);
@@ -43,7 +44,7 @@ const MyFollowersList = () => {
               className="flex items-center bg-gray-800 p-4 rounded-lg shadow"
             >
               <img
-                src={follower.avatarUrl}
+                src={getImageUrl(follower.avatarUrl)}
                 alt={follower.username}
                 className="w-12 h-12 rounded-full mr-4"
               />

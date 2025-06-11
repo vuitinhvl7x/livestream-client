@@ -7,6 +7,8 @@ import VideoPlayer from "../components/VideoPlayer";
 import ChatBox from "../components/ChatBox";
 import useSocket from "../hooks/useSocket";
 import { joinStreamRoom, leaveStreamRoom } from "../lib/socket";
+import ExpandableText from "../components/ExpandableText";
+import { getImageUrl } from "../utils/image";
 
 const StreamDetail = () => {
   const { streamId } = useParams();
@@ -96,26 +98,23 @@ const StreamDetail = () => {
       <div className="text-center mt-10 text-gray-300">Stream not found.</div>
     );
   }
-
+  console.log("stream.user.avatarUrl in stream detail", stream.user.avatarUrl);
   return (
     <div className="flex flex-col lg:flex-row h-[calc(100vh-theme(height.16))]">
       <div className="flex-1 lg:w-3/4 flex flex-col">
         <VideoPlayer src={isLive ? stream.playbackUrls : vod?.videoUrl} />
         <div className="p-4">
           <h1 className="text-2xl font-bold text-white">{stream.title}</h1>
-          <p className="text-gray-300 mt-2">{stream.description}</p>
+          <ExpandableText>{stream.description}</ExpandableText>
           <div className="flex items-center mt-4">
             <Link
               to={`/channel/${stream.user.username}`}
               className="flex items-center"
             >
               <img
-                src={
-                  stream.user.avatarUrl ||
-                  "https://fakeimg.pl/40/282828/eae0d0?text=A"
-                }
+                src={getImageUrl(stream.user.avatarUrl)}
                 alt={stream.user.displayName}
-                className="w-12 h-12 rounded-full mr-4"
+                className="w-12 h-12 rounded-full mr-4 object-cover flex-shrink-0"
               />
               <div>
                 <p className="font-semibold text-gray-100">
