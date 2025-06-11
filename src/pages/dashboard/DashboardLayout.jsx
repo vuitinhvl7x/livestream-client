@@ -33,7 +33,7 @@ const DashboardLayout = () => {
                   end={link.to === "/dashboard"}
                   className={({ isActive }) =>
                     `block py-2 px-4 rounded transition-colors duration-200 ${
-                      isActive ? "bg-sky-500 text-white" : "hover:bg-gray-700"
+                      isActive ? "bg-gray-700 text-white" : "hover:bg-gray-800"
                     }`
                   }
                 >
