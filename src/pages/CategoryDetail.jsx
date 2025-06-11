@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import api from "../api";
 import StreamCard from "../components/StreamCard";
 import VodCard from "../components/VodCard";
+import { getImageUrl } from "../utils/image";
 
 const CategoryDetail = () => {
   const { slug } = useParams();
@@ -87,10 +88,7 @@ const CategoryDetail = () => {
       {/* Category Header */}
       <div className="flex flex-col md:flex-row items-start gap-6 mb-8">
         <img
-          src={
-            category.thumbnailUrl ||
-            "https://fakeimg.pl/180x240/282828/eae0d0?text=Game"
-          }
+          src={getImageUrl(category.thumbnailUrl)}
           alt={category.name}
           className="w-32 md:w-44 rounded-lg shadow-md"
         />
