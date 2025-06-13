@@ -35,8 +35,8 @@ const SearchResults = () => {
           vodApi.searchVODs(vodParams),
         ]);
 
-        setStreams(streamRes.data.data.streams);
-        setVods(vodRes.data.data.vods);
+        setStreams(streamRes.data.streams);
+        setVods(vodRes.data.vods);
       } catch (err) {
         setError("Failed to fetch search results. Please try again later.");
         console.error(err);

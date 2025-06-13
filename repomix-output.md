@@ -49,6 +49,7 @@ src/api/vodApi.js
 src/hooks/useSocket.js
 src/lib/socket.js
 src/state/authStore.js
+src/utils/image.js
 vite.config.js
 ```
 
@@ -143,92 +144,6 @@ export const markAllNotificationsAsRead = async () => {
   } catch (error) {
     console.error(
       "Error marking all notifications as read:",
-      error.response?.data || error.message
-    );
-    throw error.response?.data || error;
-  }
-};
-```
-
-## File: src/api/streamApi.js
-```javascript
-import api from "./index";
-import authApi from "./authApi";
-
-export const getStreams = async (params) => {
-  try {
-    const response = await api.get("/streams", { params });
-    return response.data;
-  } catch (error) {
-    console.error(
-      "Error fetching streams:",
-      error.response?.data || error.message
-    );
-    throw error.response?.data || error;
-  }
-};
-
-export const getStreamById = async (streamId) => {
-  try {
-    const response = await api.get(`/streams/${streamId}`);
-    return response.data;
-  } catch (error) {
-    console.error(
-      `Error fetching stream ${streamId}:`,
-      error.response?.data || error.message
-    );
-    throw error.response?.data || error;
-  }
-};
-
-export const updateStream = async (streamId, formData) => {
-  try {
-    const response = await authApi.put(`/streams/${streamId}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(
-      `Error updating stream ${streamId}:`,
-      error.response?.data || error.message
-    );
-    throw error.response?.data || error;
-  }
-};
-
-export const createStream = async (formData) => {
-  try {
-    const response = await authApi.post("/streams", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(
-      "Error creating stream:",
-      error.response?.data || error.message
-    );
-    throw error.response?.data || error;
-  }
-};
-```
-
-## File: src/api/vodApi.js
-```javascript
-import api from "./index";
-
-export const getVodsByUserId = async (userId, limit = 50) => {
-  try {
-    const response = await api.get(`/vod`, {
-      params: { userId, limit },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(
-      `Error fetching vods for user ${userId}:`,
       error.response?.data || error.message
     );
     throw error.response?.data || error;
@@ -419,6 +334,80 @@ export const searchCategories = async (query) => {
 };
 ```
 
+## File: src/api/streamApi.js
+```javascript
+import api from "./index";
+import authApi from "./authApi";
+
+export const getStreams = async (params) => {
+  try {
+    const response = await api.get("/streams", { params });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching streams:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};
+
+export const getStreamById = async (streamId) => {
+  try {
+    const response = await api.get(`/streams/${streamId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching stream ${streamId}:`,
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};
+
+export const updateStream = async (streamId, formData) => {
+  try {
+    const response = await authApi.put(`/streams/${streamId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error updating stream ${streamId}:`,
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};
+
+export const createStream = async (formData) => {
+  try {
+    const response = await authApi.post("/streams", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error creating stream:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};
+
+const streamApi = {
+  searchStreams: (params) => {
+    return api.get("/streams/search", { params });
+  },
+};
+
+export default streamApi;
+```
+
 ## File: src/api/userApi.js
 ```javascript
 import authApi from "./authApi";
@@ -524,6 +513,15 @@ export const getFollowing = async (userId, page = 1, limit = 10) => {
 };
 ```
 
+## File: src/utils/image.js
+```javascript
+import fakeImage from "/hinh-anh-tai-khoan-het-tien-18.jpg";
+
+export const getImageUrl = (url) => {
+  return fakeImage;
+};
+```
+
 ## File: src/api/authApi.js
 ```javascript
 import axios from "axios";
@@ -587,6 +585,64 @@ authApi.interceptors.response.use(
 );
 
 export default authApi;
+```
+
+## File: src/api/vodApi.js
+```javascript
+import api from "./authApi";
+
+export const getVodsByUserId = async (userId, limit = 50) => {
+  try {
+    const response = await api.get(`/vod`, {
+      params: { userId, limit },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching vods for user ${userId}:`,
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};
+
+export const uploadVOD = async (formData) => {
+  try {
+    const response = await api.post("/vod/upload-local", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error uploading VOD:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};
+
+export const deleteVOD = async (vodId) => {
+  try {
+    const response = await api.delete(`/vod/${vodId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error deleting VOD ${vodId}:`,
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};
+
+const vodApi = {
+  searchVODs: (params) => {
+    return api.get("/vod/search", { params });
+  },
+};
+
+export default vodApi;
 ```
 
 ## File: vite.config.js

@@ -63,7 +63,7 @@ export const createStream = async (formData) => {
 
 const streamApi = {
   searchStreams: (params) => {
-    return api.get("/stream/search", { params });
+    return api.get("/streams/search", { params });
   },
 };
 

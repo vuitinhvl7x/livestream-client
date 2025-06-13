@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { sendChatMessage } from "../lib/socket";
 
@@ -9,9 +9,11 @@ const ChatBox = ({
   isLive,
   streamEnded,
   socket,
+  isConnected,
 }) => {
   const [chatMessages, setChatMessages] = useState(initialMessages);
   const [newMessage, setNewMessage] = useState("");
+  const chatContainerRef = useRef(null);
 
   useEffect(() => {
     // Update internal state if initial messages from props change
@@ -19,17 +21,27 @@ const ChatBox = ({
   }, [initialMessages]);
 
   useEffect(() => {
-      // console.log("socket in Chatbox", socket);
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
+
+  useEffect(() => {
+    console.log("socket in Chatbox and isConnected", socket, isConnected);
     if (socket) {
       // The parent component is now responsible for connecting and joining the room.
       // This component just needs to listen for chat-related events.
       socket.on("recent_chat_history", ({ messages }) => {
+        console.log("Received recent_chat_history from backend:", messages);
         setChatMessages(() => messages);
       });
 
       socket.on("new_message", (message) => {
         setChatMessages((prevMessages) => [...prevMessages, message]);
       });
+
+      // No need to request history anymore, backend sends it on join.
 
       // Cleanup listeners when the socket instance changes or component unmounts
       return () => {
@@ -93,10 +105,12 @@ const ChatBox = ({
       <div className="p-4 border-b border-gray-700">
         <h2 className="text-xl font-semibold text-gray-100">Stream Chat</h2>
       </div>
-      <div className="flex-1 p-4 overflow-y-auto">{renderChatContent()}</div>
+      <div ref={chatContainerRef} className="flex-1 p-4 overflow-y-auto">
+        {renderChatContent()}
+      </div>
       <div className="p-4 border-t border-gray-700">
         {isLive ? (
-          socket ? (
+          socket && socket.connected ? (
             <form onSubmit={handleSendMessage}>
               <input
                 type="text"

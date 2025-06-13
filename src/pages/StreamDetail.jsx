@@ -100,8 +100,8 @@ const StreamDetail = () => {
   }
   // console.log("stream.user.avatarUrl in stream detail", stream.user.avatarUrl);
   return (
-    <div className="flex flex-col lg:flex-row h-[calc(100vh-theme(height.16))]">
-      <div className="flex-1 lg:w-3/4 flex flex-col">
+    <div className="flex flex-col lg:flex-row h-[calc(100vh-theme(height.16))] overflow-y-auto lg:overflow-y-hidden">
+      <div className="flex-1 lg:w-3/4 flex flex-col lg:overflow-y-auto">
         <VideoPlayer src={isLive ? stream.playbackUrls : vod?.videoUrl} />
         <div className="p-4">
           <h1 className="text-2xl font-bold text-white">{stream.title}</h1>
@@ -143,13 +143,14 @@ const StreamDetail = () => {
           </div>
         </div>
       </div>
-      <aside className="w-full lg:w-1/4">
+      <aside className="w-full lg:w-1/4 h-1/2 lg:h-full">
         <ChatBox
           messages={messages}
           streamId={streamId}
           isLive={isLive}
           streamEnded={!isLive && !vod}
           socket={socket}
+          isConnected={isConnected}
         />
       </aside>
     </div>
