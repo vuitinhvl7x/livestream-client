@@ -38,6 +38,15 @@ const ChatBox = ({
   }, [chatMessages]);
 
   useEffect(() => {
+    if (isLive && !isPrependingRef.current) {
+      const chatContainer = chatContainerRef.current;
+      if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+    }
+  }, [chatMessages, isLive]);
+
+  useEffect(() => {
     if (socket) {
       const handleRecentChatHistory = ({ messages }) => {
         setChatMessages(messages);
