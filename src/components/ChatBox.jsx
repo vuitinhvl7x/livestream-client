@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
 import { sendChatMessage } from "../lib/socket";
 
@@ -13,43 +13,113 @@ const ChatBox = ({
 }) => {
   const [chatMessages, setChatMessages] = useState(initialMessages);
   const [newMessage, setNewMessage] = useState("");
+  const [isLoadingOlder, setIsLoadingOlder] = useState(false);
+  const [hasMoreOlderMessages, setHasMoreOlderMessages] = useState(true);
   const chatContainerRef = useRef(null);
+  const isPrependingRef = useRef(false);
+  const prevScrollHeightRef = useRef(null);
 
   useEffect(() => {
-    // Update internal state if initial messages from props change
-    setChatMessages(initialMessages);
-  }, [initialMessages]);
+    // This effect is for VOD chat history, which is passed directly via props
+    if (!isLive) {
+      setChatMessages(initialMessages);
+    }
+  }, [initialMessages, isLive]);
 
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+  useLayoutEffect(() => {
+    const chatContainer = chatContainerRef.current;
+    if (isPrependingRef.current && prevScrollHeightRef.current !== null) {
+      // Restore scroll position after prepending older messages
+      chatContainer.scrollTop =
+        chatContainer.scrollHeight - prevScrollHeightRef.current;
+      isPrependingRef.current = false;
+      prevScrollHeightRef.current = null;
     }
   }, [chatMessages]);
 
   useEffect(() => {
-    console.log("socket in Chatbox and isConnected", socket, isConnected);
     if (socket) {
-      // The parent component is now responsible for connecting and joining the room.
-      // This component just needs to listen for chat-related events.
-      socket.on("recent_chat_history", ({ messages }) => {
-        console.log("Received recent_chat_history from backend:", messages);
-        setChatMessages(() => messages);
-      });
+      const handleRecentChatHistory = ({ messages }) => {
+        setChatMessages(messages);
+        // If we receive less than the initial batch size, assume no more older messages
+        setHasMoreOlderMessages(messages.length === 50);
+        // On initial load, scroll to bottom
+        const chatContainer = chatContainerRef.current;
+        if (chatContainer) {
+          // Use timeout to ensure DOM is updated before scrolling
+          setTimeout(() => {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+          }, 0);
+        }
+      };
 
-      socket.on("new_message", (message) => {
+      const handleNewMessage = (message) => {
+        const chatContainer = chatContainerRef.current;
+        // Determine if user is scrolled near the bottom before adding new message
+        const isScrolledToBottom =
+          chatContainer.scrollHeight - chatContainer.clientHeight <=
+          chatContainer.scrollTop + 1;
+
         setChatMessages((prevMessages) => [...prevMessages, message]);
-      });
 
-      // No need to request history anymore, backend sends it on join.
+        if (isScrolledToBottom) {
+          setTimeout(() => {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+          }, 0);
+        }
+      };
 
-      // Cleanup listeners when the socket instance changes or component unmounts
+      const handleOlderChatHistory = ({ messages }) => {
+        if (messages.length > 0) {
+          isPrependingRef.current = true;
+          prevScrollHeightRef.current = chatContainerRef.current.scrollHeight;
+          setChatMessages((prev) => [...messages, ...prev]);
+        } else {
+          setHasMoreOlderMessages(false);
+        }
+        setIsLoadingOlder(false);
+      };
+
+      socket.on("recent_chat_history", handleRecentChatHistory);
+      socket.on("new_message", handleNewMessage);
+      socket.on("older_chat_history", handleOlderChatHistory);
+
       return () => {
-        socket.off("recent_chat_history");
-        socket.off("new_message");
+        socket.off("recent_chat_history", handleRecentChatHistory);
+        socket.off("new_message", handleNewMessage);
+        socket.off("older_chat_history", handleOlderChatHistory);
       };
     }
   }, [socket]);
+
+  const loadOlderMessages = () => {
+    if (
+      isLoadingOlder ||
+      !hasMoreOlderMessages ||
+      !socket ||
+      chatMessages.length === 0
+    )
+      return;
+
+    setIsLoadingOlder(true);
+    const oldestMessage = chatMessages[0];
+    socket.emit("get_older_messages", {
+      streamId,
+      beforeTimestamp: oldestMessage.createdAt || oldestMessage.timestamp,
+    });
+  };
+
+  const handleScroll = () => {
+    if (chatContainerRef.current?.scrollTop === 0) {
+      loadOlderMessages();
+    }
+  };
+
+  useEffect(() => {
+    const chatContainer = chatContainerRef.current;
+    chatContainer?.addEventListener("scroll", handleScroll);
+    return () => chatContainer?.removeEventListener("scroll", handleScroll);
+  }, [socket, isLoadingOlder, hasMoreOlderMessages, chatMessages]); // Re-add listener if dependencies change
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -106,6 +176,11 @@ const ChatBox = ({
         <h2 className="text-xl font-semibold text-gray-100">Stream Chat</h2>
       </div>
       <div ref={chatContainerRef} className="flex-1 p-4 overflow-y-auto">
+        {isLoadingOlder && (
+          <div className="text-center text-gray-400 p-2">
+            Loading older messages...
+          </div>
+        )}
         {renderChatContent()}
       </div>
       <div className="p-4 border-t border-gray-700">

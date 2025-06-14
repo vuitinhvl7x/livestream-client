@@ -19,6 +19,7 @@ export const getSocket = () => {
 
     // Use the same config as StreamDetail.jsx for consistency
     socket = io(VITE_API_URL, {
+      path: "/app/socket.io",
       autoConnect: false,
       transports: ["websocket"],
       auth: {
