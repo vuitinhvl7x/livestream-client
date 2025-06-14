@@ -1,7 +1,10 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { searchCategories } from "../api/categoryApi";
 import api from "../api";
 import { getImageUrl } from "../utils/image";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
@@ -10,11 +13,14 @@ const Categories = () => {
   const [error, setError] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const [isSearching, setIsSearching] = useState(false);
+
   const page = searchParams.get("page") || "1";
 
-  const fetchCategories = useCallback(async (currentPage) => {
+  const fetchPaginatedCategories = useCallback(async (currentPage) => {
+    setLoading(true);
     try {
-      setLoading(true);
       const params = new URLSearchParams({
         page: currentPage,
         limit: 12,
@@ -36,9 +42,47 @@ const Categories = () => {
     }
   }, []);
 
+  const performSearch = useCallback(async (query) => {
+    setIsSearching(true);
+    setPagination(null);
+    try {
+      const data = await searchCategories(query);
+      setCategories(data.categories);
+    } catch (error) {
+      toast.error("Failed to search for categories.");
+      setCategories([]);
+    } finally {
+      setIsSearching(false);
+    }
+  }, []);
+
   useEffect(() => {
-    fetchCategories(page);
-  }, [fetchCategories, page]);
+    const handler = setTimeout(() => {
+      if (searchQuery) {
+        setLoading(true);
+        performSearch(searchQuery).finally(() => setLoading(false));
+      } else {
+        fetchPaginatedCategories(page);
+      }
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchQuery, page, fetchPaginatedCategories, performSearch]);
+
+  const handleSearchChange = (e) => {
+    const newQuery = e.target.value;
+    setSearchQuery(newQuery);
+    const newParams = new URLSearchParams(searchParams);
+    if (newQuery) {
+      newParams.set("q", newQuery);
+      newParams.delete("page");
+    } else {
+      newParams.delete("q");
+    }
+    setSearchParams(newParams);
+  };
 
   const handlePageChange = (newPage) => {
     setSearchParams({ page: newPage });
@@ -54,7 +98,7 @@ const Categories = () => {
           key={i}
           onClick={() => handlePageChange(i)}
           className={`px-4 py-2 mx-1 rounded text-white ${
-            i === pagination.page
+            pagination.page === i
               ? "bg-sky-600"
               : "bg-gray-700 hover:bg-gray-600"
           }`}
@@ -66,22 +110,31 @@ const Categories = () => {
     return <div className="flex justify-center mt-6">{pages}</div>;
   };
 
-  if (loading) {
-    return (
-      <div className="text-center mt-10 text-gray-300">
-        Loading categories...
-      </div>
-    );
-  }
-
-  if (error) {
-    return <div className="text-center mt-10 text-red-500">{error}</div>;
-  }
-
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold text-white mb-6">All Categories</h1>
-      {categories.length > 0 ? (
+      <div className="mb-6 relative">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Search for categories..."
+          className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 text-white"
+        />
+        {isSearching && (
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+            <Loader2 className="h-5 w-5 text-gray-400 animate-spin" />
+          </div>
+        )}
+      </div>
+
+      {loading ? (
+        <div className="text-center mt-10 text-gray-300">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto" />
+        </div>
+      ) : error ? (
+        <div className="text-center mt-10 text-red-500">{error}</div>
+      ) : categories.length > 0 ? (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {categories.map((category) => (

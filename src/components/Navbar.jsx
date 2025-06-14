@@ -113,6 +113,13 @@ const Navbar = () => {
                       Welcome, {user.displayName || user.username}
                     </span>
                   )}
+                  {user?.role === "admin" && (
+                    <Link to="/admin/dashboard">
+                      <button className="bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 mr-2">
+                        Admin Panel
+                      </button>
+                    </Link>
+                  )}
                   <Link to="/dashboard">
                     <button className="bg-purple-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-purple-700 mr-2">
                       Dashboard
@@ -239,6 +246,13 @@ const Navbar = () => {
                         Welcome, {user.displayName || user.username}
                       </span>
                     </div>
+                  )}
+                  {user?.role === "admin" && (
+                    <Link to="/admin/dashboard">
+                      <button className="w-full text-left bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 mb-2">
+                        Admin Panel
+                      </button>
+                    </Link>
                   )}
                   <Link to="/dashboard">
                     <button className="w-full text-left bg-purple-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-purple-700 mb-2">

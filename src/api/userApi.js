@@ -99,3 +99,16 @@ export const getFollowing = async (userId, page = 1, limit = 10) => {
     throw error.response?.data || error;
   }
 };
+
+export const getAllUsers = async () => {
+  try {
+    const response = await api.get("/users/all");
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching all users:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};

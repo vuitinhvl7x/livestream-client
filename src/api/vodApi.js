@@ -1,4 +1,18 @@
-import api from "./authApi";
+import api from "./index";
+import authApi from "./authApi";
+
+export const getAllVods = async (params) => {
+  try {
+    const response = await api.get("/vod", { params });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching all VODs:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};
 
 export const getVodsByUserId = async (userId, limit = 50) => {
   try {
@@ -17,7 +31,7 @@ export const getVodsByUserId = async (userId, limit = 50) => {
 
 export const uploadVOD = async (formData) => {
   try {
-    const response = await api.post("/vod/upload-local", formData, {
+    const response = await authApi.post("/vod/upload-local", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -34,7 +48,7 @@ export const uploadVOD = async (formData) => {
 
 export const deleteVOD = async (vodId) => {
   try {
-    const response = await api.delete(`/vod/${vodId}`);
+    const response = await authApi.delete(`/vod/${vodId}`);
     return response.data;
   } catch (error) {
     console.error(

@@ -22,6 +22,14 @@ import MyFollowingList from "../pages/dashboard/MyFollowingList";
 import UserNotificationsCenter from "../pages/dashboard/UserNotificationsCenter";
 import CreateStream from "../pages/dashboard/CreateStream";
 
+// Import Admin components
+import AdminRoute from "./AdminRoute";
+import AdminLayout from "../pages/admin/AdminLayout";
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import CategoryManagement from "../pages/admin/CategoryManagement";
+import VodManagement from "../pages/admin/VodManagement";
+import PublicRoute from "./PublicRoute";
+
 const Dashboard = () => {
   const userInfo = useAuthStore((state) => state.userInfo);
   const token = useAuthStore((state) => state.token);
@@ -60,8 +68,22 @@ const AppRoutes = () => {
       <Route path="/channel/:username" element={<Channel />} />
 
       {/* Auth Routes */}
-      <Route path="/account/login" element={<Login />} />
-      <Route path="/account/register" element={<Register />} />
+      <Route
+        path="/account/login"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/account/register"
+        element={
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        }
+      />
 
       {/* Private Routes */}
       <Route
@@ -79,6 +101,20 @@ const AppRoutes = () => {
         <Route path="followers" element={<MyFollowersList />} />
         <Route path="following" element={<MyFollowingList />} />
         <Route path="notifications" element={<UserNotificationsCenter />} />
+      </Route>
+
+      {/* Admin Routes */}
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <AdminLayout />
+          </AdminRoute>
+        }
+      >
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="categories" element={<CategoryManagement />} />
+        <Route path="vods" element={<VodManagement />} />
       </Route>
 
       {/* Fallback Route */}
